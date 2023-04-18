@@ -112,6 +112,13 @@ jobs:
       with:
         name: managedSolutions
         path: ${{ inputs.solution_release_folder}}
+        
+    - name: List Downloaded Artifacts
+      run: |
+        cd ${{ inputs.solution_release_folder}}
+        dir
+      shell: pwsh
+        
     - name: Import solution to prod env
       uses: microsoft/powerplatform-actions/import-solution@v0
       with:
