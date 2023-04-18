@@ -67,33 +67,40 @@ jobs:
         solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
         solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
         solution-type: Unmanaged
-
-    - name: Import solution as unmanaged to build env
-      uses: microsoft/powerplatform-actions/import-solution@v0
+        
+    - name: Pack solution
+      uses: microsoft/powerplatform-actions/pack-solution@v0
       with:
-        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-        app-id: ${{inputs.CLIENT_ID}}
-        client-secret: ${{ secrets.envSecret }}
-        tenant-id: ${{inputs.TENANT_ID}}
-        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
-        force-overwrite: true
-        publish-changes: true
+        solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
+        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}_managed.zip
+        solution-type: Managed
 
-    - name: Export solution as managed
-      uses: microsoft/powerplatform-actions/export-solution@v0
-      with:
-        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-        app-id: ${{inputs.CLIENT_ID}}
-        client-secret: ${{ secrets.envSecret }} 
-        tenant-id: ${{inputs.TENANT_ID}}
-        solution-name: ${{ inputs.solution_name }}
-        managed: true
-        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
+#    - name: Import solution as unmanaged to build env
+#      uses: microsoft/powerplatform-actions/import-solution@v0
+#      with:
+#        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+#        app-id: ${{inputs.CLIENT_ID}}
+#        client-secret: ${{ secrets.envSecret }}
+#        tenant-id: ${{inputs.TENANT_ID}}
+#        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+#        force-overwrite: true
+#        publish-changes: true
+
+#    - name: Export solution as managed
+#      uses: microsoft/powerplatform-actions/export-solution@v0
+#      with:
+#        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+#        app-id: ${{inputs.CLIENT_ID}}
+#        client-secret: ${{ secrets.envSecret }} 
+#        tenant-id: ${{inputs.TENANT_ID}}
+#        solution-name: ${{ inputs.solution_name }}
+#        managed: true
+#        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
 
     - name: Upload the ready to ship solution to GH artifact store
       uses: actions/upload-artifact@v2
       with:
-        name: managedSolutions
+        name: solutions
         path: ${{ inputs.solution_shipping_folder}}/
 
   release-to-staging:
@@ -110,7 +117,7 @@ jobs:
     - name: Fetch the ready to ship solution from GH artifact store
       uses: actions/download-artifact@v2
       with:
-        name: managedSolutions
+        name: solutions
         path: ${{ inputs.solution_release_folder}}
         
     - name: List Downloaded Artifacts
@@ -129,3 +136,11 @@ jobs:
         solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      #if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+            ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+            ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}.zip
