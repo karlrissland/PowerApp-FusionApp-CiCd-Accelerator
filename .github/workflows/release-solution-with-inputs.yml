@@ -68,13 +68,22 @@ jobs:
         solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
         solution-type: Unmanaged
         
-    - name: Pack solution
-      uses: microsoft/powerplatform-actions/pack-solution@v0
-      with:
-        solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
-        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}_managed.zip
-        solution-type: Managed
+#--------------------------------
+# This does not work as the type in the repo is not unmanaged
+# Appears you cannot simply pack an unmanaged solution as a managed solution
+# You actually need to export the solution as managed, and then pack it
+# So will need a build process
+#        
+#    - name: Pack solution
+#      uses: microsoft/powerplatform-actions/pack-solution@v0
+#      with:
+#        solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
+#        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}_managed.zip
+#        solution-type: Managed
 
+# -------------------------------
+# Upload the unmanagd solution so it can be exported as managed
+#
 #    - name: Import solution as unmanaged to build env
 #      uses: microsoft/powerplatform-actions/import-solution@v0
 #      with:
@@ -86,6 +95,9 @@ jobs:
 #        force-overwrite: true
 #        publish-changes: true
 
+#---------------------------------
+# Exports the solution as managed
+#
 #    - name: Export solution as managed
 #      uses: microsoft/powerplatform-actions/export-solution@v0
 #      with:
@@ -125,7 +137,12 @@ jobs:
         cd ${{ inputs.solution_release_folder}}
         dir
       shell: pwsh
-        
+
+# ------------------------------------
+# imports an unmanaged solution
+# Note: you cannot have both an unmanaged and managed version of 
+# a solution in the same environment
+
     - name: Import solution to prod env
       uses: microsoft/powerplatform-actions/import-solution@v0
       with:
@@ -133,7 +150,7 @@ jobs:
         app-id: ${{inputs.CLIENT_ID}}
         client-secret: ${{ secrets.envSecret }}
         tenant-id: ${{inputs.TENANT_ID}}
-        solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+        solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}.zip
         force-overwrite: true
         publish-changes: true
         
@@ -142,5 +159,5 @@ jobs:
       #if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-            ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+           # ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
             ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}.zip
