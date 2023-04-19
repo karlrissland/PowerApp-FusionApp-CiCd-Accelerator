@@ -150,11 +150,10 @@ jobs:
       run: |
         cd ${{ inputs.solution_release_folder}}
         dir
-        pac auth list
       shell: pwsh
 
 # ------------------------------------
-# imports an unmanaged solution
+# imports an managed solution
 # Note: you cannot have both an unmanaged and managed version of 
 # a solution in the same environment
 
