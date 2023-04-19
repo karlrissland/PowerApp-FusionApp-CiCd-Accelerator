@@ -119,6 +119,15 @@ jobs:
       with:
         name: solutions
         path: ${{ inputs.solution_shipping_folder}}/
+        
+    - name: cleanup build environment
+      uses: microsoft/powerplatform-actions/delete-solution@v0
+      with:
+        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }} 
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-name: ${{ inputs.solution_name }}
 
   release-to-staging:
     needs: [ convert-to-managed ]
