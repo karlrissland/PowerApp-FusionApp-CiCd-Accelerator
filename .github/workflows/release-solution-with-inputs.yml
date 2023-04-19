@@ -173,5 +173,5 @@ jobs:
       #if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-           # ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+            ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
             ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}.zip
