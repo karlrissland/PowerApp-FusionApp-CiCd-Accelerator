@@ -84,32 +84,37 @@ jobs:
 # -------------------------------
 # Upload the unmanagd solution so it can be exported as managed
 #
-#    - name: Import solution as unmanaged to build env
-#      uses: microsoft/powerplatform-actions/import-solution@v0
-#      with:
-#        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-#        app-id: ${{inputs.CLIENT_ID}}
-#        client-secret: ${{ secrets.envSecret }}
-#        tenant-id: ${{inputs.TENANT_ID}}
-#        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
-#        force-overwrite: true
-#        publish-changes: true
+    - name: Import solution as unmanaged to build env
+      uses: microsoft/powerplatform-actions/import-solution@v0
+      with:
+        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }}
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+        force-overwrite: true
+        publish-changes: true
 
 #---------------------------------
 # Exports the solution as managed
 #
-#    - name: Export solution as managed
-#      uses: microsoft/powerplatform-actions/export-solution@v0
-#      with:
-#        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-#        app-id: ${{inputs.CLIENT_ID}}
-#        client-secret: ${{ secrets.envSecret }} 
-#        tenant-id: ${{inputs.TENANT_ID}}
-#        solution-name: ${{ inputs.solution_name }}
-#        managed: true
-#        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
+    - name: Export solution as managed
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
+        app-id: ${{inputs.CLIENT_ID}}
+        client-secret: ${{ secrets.envSecret }} 
+        tenant-id: ${{inputs.TENANT_ID}}
+        solution-name: ${{ inputs.solution_name }}
+        managed: true
+        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
 
-    - name: Upload the ready to ship solution to GH artifact store
+    - name: Copy Unmanaged artifact to shipping folder
+      run: |
+        copy ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}.zip
+      shell: pwsh
+
+    - name: Upload managed and unmanaged artifacts to GH artifact store
       uses: actions/upload-artifact@v2
       with:
         name: solutions
@@ -136,6 +141,7 @@ jobs:
       run: |
         cd ${{ inputs.solution_release_folder}}
         dir
+        pac auth list
       shell: pwsh
 
 # ------------------------------------
