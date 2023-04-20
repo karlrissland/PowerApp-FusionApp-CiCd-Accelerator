@@ -75,7 +75,7 @@ jobs:
         powerapps-cli-1.0.msi /quiet /log pacInstallLog.txt
         type pacInstallLog.txt
         dir
-        pac auth list
+        C:\Users\runneradmin\AppData\Local\Microsoft\PowerAppsCLI\pac auth list
         dir
       shell: cmd
 
