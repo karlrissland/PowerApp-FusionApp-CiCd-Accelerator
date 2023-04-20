@@ -53,13 +53,18 @@ jobs:
     - name: install pac CLI
       run: |
         dir
+        write-host "-----installing nuget package-----"
         nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
         cd .\Microsoft.PowerApps.CLI.1.22.2\
         dir
+        write-host "-----expanding nuget archive-----"
         Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
         cd .\Microsoft.PowerApps.CLI.1.22.2\
         dir
-        .\Microsoft.PowerApps.CLI.1.22.2\tools\pac.exe auth list
+        cd .\tools
+        dir
+        write-host "-----testing pac-----
+        pac.exe auth list
       shell: pwsh
       
     #- name: install pac CLI
