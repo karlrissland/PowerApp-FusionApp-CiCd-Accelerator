@@ -50,34 +50,7 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
     
-    - name: install pac CLI
-      run: |
-        dir
-        write-host "-----installing nuget package-----"
-        nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
-        cd .\Microsoft.PowerApps.CLI.1.22.2\
-        dir
-        write-host "-----expanding nuget archive-----"
-        Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
-        cd .\Microsoft.PowerApps.CLI.1.22.2\
-        dir
-        cd .\tools
-        dir
-        write-host "-----testing pac-----"
-        .\pac.exe auth list
-      shell: pwsh
-      
-    #- name: install pac CLI
-    #  run: |
-    #    dir
-    #    curl -L https://aka.ms/PowerAppsCLI --output powerapps-cli-1.0.msi
-    #    dir
-    #    powerapps-cli-1.0.msi /quiet /log pacInstallLog.txt
-    #    type pacInstallLog.txt
-    #    dir
-    #    C:\Users\runneradmin\AppData\Local\Microsoft\PowerAppsCLI\pac.launcher.exe auth list
-    #    dir
-    #  shell: cmd
+
 
     - name: export-solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
@@ -88,6 +61,25 @@ jobs:
         tenant-id: ${{env.TENANT_ID}}
         solution-name: ${{ github.event.inputs.solution_name }}
         solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+
+    - name: install pac CLI
+      run: |
+        dir
+        write-host "-----installing nuget package-----"
+        nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
+        #cd .\Microsoft.PowerApps.CLI.1.22.2\
+        #dir
+        write-host "-----expanding nuget archive-----"
+        #Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        #cd .\Microsoft.PowerApps.CLI.1.22.2\
+        #dir
+        #cd .\tools
+        dir
+        write-host "-----testing pac-----"
+        #.\pac.exe auth list
+        .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2\tools\pac.exe auth list
+      shell: pwsh
         
     - name: unpack-solution action
       uses: microsoft/powerplatform-actions/unpack-solution@v0
