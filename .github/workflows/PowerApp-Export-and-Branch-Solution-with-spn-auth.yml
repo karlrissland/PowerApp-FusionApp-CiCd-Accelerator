@@ -52,7 +52,7 @@ jobs:
     
     - name: install pac CLI
       run: |
-        winget install microsoft.powerappscli --silent
+        install Microsoft.PowerApps.CLI -OutputDirectory pac
         pac auth list
 
     - name: export-solution action
