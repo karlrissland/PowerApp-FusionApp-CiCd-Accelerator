@@ -55,12 +55,13 @@ jobs:
         dir
         Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
         dir
-        start-process powerapps-cli-1.0.msi /quiet
-        cd c:\users\runneradmin
-        dir
-        cd c:\users\public
-        dir
-        cd c:\users\installer
+        $file = "powerapps-cli-1.0.msi"
+        $log = "install.log"
+        $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
+        $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
+        $procMain.WaitForExit() 
+        $procLog.Kill()
+        # start-process powerapps-cli-1.0.msi /quiet
         dir
         pac auth list
         dir
