@@ -53,9 +53,14 @@ jobs:
     - name: install pac CLI
       run: |
         dir
+        write-host ""
         Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
         dir
+        write-host ""
         start-process powerapps-cli-1.0.msi /quiet
+        cd c:\users
+        dir
+        write-host ""
         pac auth list
         dir
 
