@@ -54,7 +54,8 @@ jobs:
       run: |
         dir
         Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
-        start /wait msiexec powerapps-cli-1.0.msi /quiet
+        dir
+        powerapps-cli-1.0.msi /quiet
         pac auth list
         dir
 
