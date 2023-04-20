@@ -62,25 +62,18 @@ jobs:
         solution-name: ${{ github.event.inputs.solution_name }}
         solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
 
-    - name: install pac CLI
+    - name: install pac CLI and create settings file
       run: |
         dir
         write-host "-----installing nuget package-----"
         nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
-        #cd .\Microsoft.PowerApps.CLI.1.22.2\
-        #dir
-        write-host "-----expanding nuget archive-----"
-        #Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        write-host "-----expanding nuget archive into .\pac-----"
         dir .\Microsoft.PowerApps.CLI.1.22.2
         Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg .\pac
-        dir
-        #cd .\Microsoft.PowerApps.CLI.1.22.2\
-        #dir
-        #cd .\tools
         write-host "-----testing pac-----"
-        #.\pac.exe auth list
-        dir .\pac\tools\
         .\pac\tools\pac.exe auth list
+        write-host "-----creating settings file-----"
+        .\pac\tools\pac.exe solution create-settings ${{ github.event.inputs.solution_name }}.zip ${{ github.event.inputs.solution_exported_folder}} ${{ github.event.inputs.solution_name }}_SettingsFile.json
       shell: pwsh
         
     - name: unpack-solution action
