@@ -50,21 +50,33 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
     
+    #- name: install pac CLI
+    #  run: |
+    #    dir
+    #    Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
+    #    dir
+    #    # $file = "powerapps-cli-1.0.msi"
+    #    # $log = "install.log"
+    #    # $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
+    #    # $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
+    #    # $procMain.WaitForExit() 
+    #    # $procLog.Kill()
+    #    start-process -FilePath "powerapps-cli-1.0.msi" -Wait -NoNewWindow -RedirectStandardOutput log.txt -ArgumentList "/quiet /norestart"
+    #    dir
+    #    pac auth list
+    #    dir
+    #  shell: pwsh
+      
     - name: install pac CLI
       run: |
         dir
-        Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
+        curl -L https://aka.ms/PowerAppsCLI --output powerapps-cli-1.0.msi
         dir
-        # $file = "powerapps-cli-1.0.msi"
-        # $log = "install.log"
-        # $procMain = Start-Process "msiexec" "/i `"$file`" /qn /l*! `"$log`"" -NoNewWindow -PassThru
-        # $procLog = Start-Process "powershell" "Get-Content -Path `"$log`" -Wait" -NoNewWindow -PassThru
-        # $procMain.WaitForExit() 
-        # $procLog.Kill()
-        start-process -FilePath "powerapps-cli-1.0.msi" -Wait -NoNewWindow -RedirectStandardOutput log.txt -ArgumentList "/quiet /norestart"
+        powerapps-cli-1.0.msi /quiet /log pacInstallLog.txt
         dir
         pac auth list
         dir
+      shell: cmd
 
     - name: export-solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
