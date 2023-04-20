@@ -64,7 +64,7 @@ jobs:
         cd .\tools
         dir
         write-host "-----testing pac-----"
-        pac.exe auth list
+        .\pac.exe auth list
       shell: pwsh
       
     #- name: install pac CLI
