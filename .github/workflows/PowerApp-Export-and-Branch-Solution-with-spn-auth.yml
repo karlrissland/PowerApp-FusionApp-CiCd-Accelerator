@@ -71,13 +71,16 @@ jobs:
         #dir
         write-host "-----expanding nuget archive-----"
         #Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        dir .\Microsoft.PowerApps.CLI.1.22.2
         Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        dir
         #cd .\Microsoft.PowerApps.CLI.1.22.2\
         #dir
         #cd .\tools
         dir
         write-host "-----testing pac-----"
         #.\pac.exe auth list
+        dir .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2\tools\
         .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2\tools\pac.exe auth list
       shell: pwsh
         
