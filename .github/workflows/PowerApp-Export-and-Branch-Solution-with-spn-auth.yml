@@ -49,7 +49,11 @@ jobs:
         app-id: ${{env.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
-
+    
+    - name: install pac CLI
+      run: |
+        winget install microsoft.powerappscli --silent
+        pac auth list
 
     - name: export-solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
