@@ -73,6 +73,7 @@ jobs:
         curl -L https://aka.ms/PowerAppsCLI --output powerapps-cli-1.0.msi
         dir
         powerapps-cli-1.0.msi /quiet /log pacInstallLog.txt
+        type pacInstallLog.txt
         dir
         pac auth list
         dir
