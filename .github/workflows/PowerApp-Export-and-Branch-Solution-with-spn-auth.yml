@@ -52,8 +52,11 @@ jobs:
     
     - name: install pac CLI
       run: |
-        install Microsoft.PowerApps.CLI -OutputDirectory pac
+        dir
+        Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -Outfile powerapps-cli-1.0.msi
+        start /wait msiexec /i powerapps-cli-1.0.msi /quiet
         pac auth list
+        dir
 
     - name: export-solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
