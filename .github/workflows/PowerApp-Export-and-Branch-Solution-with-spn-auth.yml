@@ -64,18 +64,14 @@ jobs:
 
     - name: install pac CLI and create settings file
       run: |
-        dir
         write-host "-----installing nuget package-----"
         nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
         write-host "-----expanding nuget archive into .\pac-----"
-        dir .\Microsoft.PowerApps.CLI.1.22.2
         Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg .\pac
-        write-host "-----testing pac-----"
-        .\pac\tools\pac.exe auth list
         write-host "-----creating settings file-----"
         .\pac\tools\pac.exe solution create-settings --solution-zip ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip --settings-file ${{ github.event.inputs.solution_name }}_SettingsFile.json
         write-host "-----copy settings file so included in branch-----"
-        copy ${{ github.event.inputs.solution_name }}_SettingsFile.json ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_SettingsFile.json
+        copy .\${{ github.event.inputs.solution_name }}_SettingsFile.json ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_SettingsFile.json
       shell: pwsh
         
     - name: unpack-solution action
