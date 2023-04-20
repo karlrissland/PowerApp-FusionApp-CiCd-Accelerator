@@ -63,7 +63,7 @@ jobs:
         dir
         cd .\tools
         dir
-        write-host "-----testing pac-----
+        write-host "-----testing pac-----"
         pac.exe auth list
       shell: pwsh
       
