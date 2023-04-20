@@ -54,9 +54,12 @@ jobs:
       run: |
         dir
         nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
+        cd .\Microsoft.PowerApps.CLI.1.22.2\
         dir
-        Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg
-        .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2\tools\pac.exe auth list
+        Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2.nupkg
+        cd .\Microsoft.PowerApps.CLI.1.22.2\
+        dir
+        .\Microsoft.PowerApps.CLI.1.22.2\tools\pac.exe auth list
       shell: pwsh
       
     #- name: install pac CLI
