@@ -1,0 +1,9 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "almlab_TestEnvironmentVariable",
+      "Value": ""
+    }
+  ],
+  "ConnectionReferences": []
+}

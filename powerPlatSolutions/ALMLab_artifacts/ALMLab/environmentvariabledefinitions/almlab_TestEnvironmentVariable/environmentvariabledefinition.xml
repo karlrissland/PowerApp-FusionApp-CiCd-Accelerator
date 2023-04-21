@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="almlab_TestEnvironmentVariable">
+  <defaultvalue>Hello World</defaultvalue>
+  <description default="Testing">
+    <label description="Testing" languagecode="1033" />
+  </description>
+  <displayname default="TestEnvironmentVariable">
+    <label description="TestEnvironmentVariable" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>
