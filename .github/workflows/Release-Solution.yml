@@ -21,10 +21,10 @@ jobs:
       SOLUTION_SHIPPING_FOLDER: out/ship/
 
       # Staging the unpacked solution folder before check-in
-      SOLUTION_OUTBOUND_FOLDER: out/solutions/
+      SOLUTION_OUTBOUND_FOLDER: out/powerPlatSolutions/
 
       # Folder name to be created and checked in
-      SOLUTION_SOURCE_FOLDER: solutions/
+      SOLUTION_SOURCE_FOLDER: powerPlatSolutions/
 
       # Folder where the relased binaries are going to be hosted
       SOLUTION_RELEASE_FOLDER: out/release
