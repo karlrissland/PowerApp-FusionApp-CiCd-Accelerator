@@ -101,6 +101,12 @@ jobs:
         # This should be conditional, if from release, load artifacts to release
         # If this came from some other trigger, need to load artifacts as workflow artifacts
         # Deployment steps need to fetch from the correct location as well
+        
+      - name: upload artifacts
+        uses: actions/upload-artifactv@3
+        with:
+          name: ${{ vars.SOLUTION_NAME }}_artifacts
+          path: .\${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
       
       - name: cleanup build environment
         uses: microsoft/powerplatform-actions/delete-solution@v0
