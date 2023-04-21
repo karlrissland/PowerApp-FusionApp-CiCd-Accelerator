@@ -20,22 +20,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
         
       - name: pack unmanaged solution
+        run: echo packing unmanaged solution
       
       - name: import solution to build environment
+        run: echo importing unmanaged solution to build environment
       
-      - name: export unmanaged solution
+      - name: export managed solution
+        run: echo exporting managed solution
       
       - name: check exported solution
+        run: echo checking consistency of managed solution
       
       - name: create release artifacts
+        run: echo creating release artifacts
       
       - name: cleanup build environment
+        run: echo cleaning up build environment (deleting imported solution)
         
   deploy-to-test:
     environment: test
@@ -47,10 +49,13 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: fetch unmanaged solution from artifacts
+        run: echo fetching unmanaged solution from release artifacts
       
       - name: update settings file
+        run: echo updating settings file for environment
       
       - name: import unmanaged solution
+        run: echo importing unmanaged solution
 
   deploy-to-prod:
     environment: prod
@@ -62,7 +67,10 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: fetch managed solution from artifacts
+        run: echo fetring managed solution from release artifacts
       
       - name: update settings file
+        run: echo updating settings file for environment
       
       - name: import managed solution
+        run: echo importing unmanaged solution
