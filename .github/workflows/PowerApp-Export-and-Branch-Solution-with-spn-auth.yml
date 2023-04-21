@@ -74,6 +74,7 @@ jobs:
         dir
         mkdir .\${{ github.event.inputs.solution_folder}}
         copy .\${{ github.event.inputs.solution_name }}_SettingsFile.json .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_SettingsFile.json
+        dir .\${{ github.event.inputs.solution_folder}}
       shell: pwsh
         
     - name: unpack-solution action
@@ -83,6 +84,10 @@ jobs:
         solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}
         solution-type: 'Unmanaged'
         overwrite-files: true
+        
+    - name: Dir listing of staging folder
+      run: |
+        dir .\${{ github.event.inputs.solution_folder}}
 
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
