@@ -34,6 +34,11 @@ jobs:
         with:
           lfs: true
           
+      - name: See if things are where we want them
+        run: |
+          dir .\${{ env.SOLUTION_SOURCE_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}
+        shell: pwsh
+          
       - name: verify connection to power platform - hardcoded
         uses: microsoft/powerplatform-actions/who-am-i@v0
         with:
