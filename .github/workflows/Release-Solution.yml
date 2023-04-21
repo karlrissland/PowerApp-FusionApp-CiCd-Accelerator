@@ -8,21 +8,46 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 jobs:
   build:
     environment: build
-    # The type of runner that the job will run on
     runs-on: windows-latest
     env:
+      # Emit debug information
       RUNNER_DEBUG: 1
+      
+      # Folder name for staging the exported solution
+      SOLUTION_SHIPPING_FOLDER: out/ship/
+
+      # Staging the unpacked solution folder before check-in
+      SOLUTION_OUTBOUND_FOLDER: out/solutions/
+
+      # Folder name to be created and checked in
+      SOLUTION_SOURCE_FOLDER: solutions/
+
+      # Folder where the relased binaries are going to be hosted
+      SOLUTION_RELEASE_FOLDER: out/release
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        
+        with:
+          lfs: true
+          
+      - name: verify connection to power platform
+        uses: microsoft/powerplatform-actions/who-am-i@v0
+        with:
+          environment-url: ${{env.ENVIRONMENT_URL}}
+          app-id: ${{env.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{env.TENANT_ID}}
+      
       - name: pack unmanaged solution
-        run: echo packing unmanaged solution
+        uses: microsoft/powerplatform-actions/pack-solution@v0
+        with:
+          solution-folder: ${{ env.SOLUTION_SOURCE_FOLDER }}/${{ env.solution_name }}_artifacts/${{ env.SOLUTION_NAME }}
+          solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ env.solution_name }}_artifacts/${{ env.SOLUTION_NAME }}.zip
+          solution-type: Unmanaged
       
       - name: import solution to build environment
         run: echo importing unmanaged solution to build environment
