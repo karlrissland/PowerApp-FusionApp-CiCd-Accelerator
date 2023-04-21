@@ -37,16 +37,16 @@ jobs:
       - name: verify connection to power platform
         uses: microsoft/powerplatform-actions/who-am-i@v0
         with:
-          environment-url: ${{env.ENVIRONMENT_URL}}
-          app-id: ${{env.CLIENT_ID}}
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
-          tenant-id: ${{env.TENANT_ID}}
+          tenant-id: ${{vars.TENANT_ID}}
       
       - name: pack unmanaged solution
         uses: microsoft/powerplatform-actions/pack-solution@v0
         with:
-          solution-folder: ${{ env.SOLUTION_SOURCE_FOLDER }}/${{ env.solution_name }}_artifacts/${{ env.SOLUTION_NAME }}
-          solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ env.solution_name }}_artifacts/${{ env.SOLUTION_NAME }}.zip
+          solution-folder: ${{ env.SOLUTION_SOURCE_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}
+          solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
           solution-type: Unmanaged
       
       - name: import solution to build environment
