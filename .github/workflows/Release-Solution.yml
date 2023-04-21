@@ -48,17 +48,13 @@ jobs:
           solution-folder: ${{ env.SOLUTION_SOURCE_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}
           solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
           solution-type: Unmanaged
-          
-      - name: Let's see what dir has to say
-        run: |
-          dir .\${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/
         
       - name: import solution to build environment
         uses: microsoft/powerplatform-actions/import-solution@v0
         with:
           environment-url: ${{vars.ENVIRONMENT_URL}}
           app-id: ${{vars.CLIENT_ID}}
-          client-secret: ${{ secrets.envSecret }}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{vars.TENANT_ID}}
           solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
           force-overwrite: true
@@ -69,20 +65,51 @@ jobs:
         with:
           environment-url: ${{vars.ENVIRONMENT_URL}}
           app-id: ${{vars.CLIENT_ID}}
-          client-secret: ${{ secrets.envSecret }} 
+          client-secret: ${{ secrets.PowerPlatformSPN }} 
           tenant-id: ${{vars.TENANT_ID}}
           solution-name: ${{ vars.solution_name }}
           managed: true
           solution-output-file: ${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_managed.zip
       
-      - name: check exported solution
-        run: echo checking consistency of managed solution
+      - name: move unmanaged artifacts to shipping folder
+        run: |
+          copy .\${{ env.SOLUTION_SOURCE_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_SettingsFile.json .\${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_SettingsFile.json
+          copy .\${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip .\${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
+          dir .\${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
+        shell: pwsh
+      
+      - name: check packed unmanaged solution
+        uses: microsoft/powerplatform-actions/check-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{vars.TENANT_ID}}
+          path: ${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
+      
+      - name: check exported managed solution
+        uses: microsoft/powerplatform-actions/check-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{vars.TENANT_ID}}
+          path: ${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_managed.zip
       
       - name: create release artifacts
-        run: echo creating release artifacts
+        run: echo Need to Implement After Release Trigger Setup
+        # This should be conditional, if from release, load artifacts to release
+        # If this came from some other trigger, need to load artifacts as workflow artifacts
+        # Deployment steps need to fetch from the correct location as well
       
       - name: cleanup build environment
-        run: echo cleaning up build environment
+        uses: microsoft/powerplatform-actions/delete-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }} 
+          tenant-id: ${{vars.TENANT_ID}}
+          solution-name: ${{ vars.solution_name }}
         
   deploy-to-test:
     environment: test
