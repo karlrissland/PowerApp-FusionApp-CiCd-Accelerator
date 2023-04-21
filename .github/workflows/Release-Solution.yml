@@ -1,0 +1,68 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Release Solution
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  build:
+    environment: build
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+        
+      - name: pack unmanaged solution
+      
+      - name: import solution to build environment
+      
+      - name: export unmanaged solution
+      
+      - name: check exported solution
+      
+      - name: create release artifacts
+      
+      - name: cleanup build environment
+        
+  deploy-to-test:
+    environment: test
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: fetch unmanaged solution from artifacts
+      
+      - name: update settings file
+      
+      - name: import unmanaged solution
+
+  deploy-to-prod:
+    environment: prod
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: fetch managed solution from artifacts
+      
+      - name: update settings file
+      
+      - name: import managed solution
