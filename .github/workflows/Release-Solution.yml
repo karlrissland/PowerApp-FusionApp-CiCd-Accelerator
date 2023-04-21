@@ -60,7 +60,7 @@ jobs:
 
   deploy-to-prod:
     environment: prod
-    needs: build
+    needs: deploy-to-test
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
