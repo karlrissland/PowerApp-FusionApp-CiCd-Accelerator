@@ -103,7 +103,7 @@ jobs:
         # Deployment steps need to fetch from the correct location as well
         
       - name: upload artifacts
-        uses: actions/upload-artifactv@3
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ vars.SOLUTION_NAME }}_artifacts
           path: .\${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
