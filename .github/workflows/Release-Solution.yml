@@ -125,13 +125,19 @@ jobs:
       RUNNER_DEBUG: 1
       
     steps:
-      - uses: actions/checkout@v3
+     # - uses: actions/checkout@v3
       
       - name: fetch unmanaged solution from artifacts
-        run: echo fetching unmanaged solution from release artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ vars.SOLUTION_NAME }}_artifacts
+          path: artifacts
       
       - name: update settings file
-        run: echo updating settings file for environment
+        run: |
+          dir
+          dir ./artifacts
+        shell: pwsh
       
       - name: import unmanaged solution
         run: echo importing unmanaged solution
