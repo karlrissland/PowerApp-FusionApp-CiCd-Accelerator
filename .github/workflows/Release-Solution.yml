@@ -37,10 +37,11 @@ jobs:
         run: echo creating release artifacts
       
       - name: cleanup build environment
-        run: echo cleaning up build environment (deleting imported solution)
+        run: echo cleaning up build environment
         
   deploy-to-test:
     environment: test
+    needs: build
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
@@ -59,6 +60,7 @@ jobs:
 
   deploy-to-prod:
     environment: prod
+    needs: build
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
