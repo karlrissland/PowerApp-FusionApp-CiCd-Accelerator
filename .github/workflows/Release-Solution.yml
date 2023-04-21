@@ -34,6 +34,14 @@ jobs:
         with:
           lfs: true
           
+      - name: verify connection to power platform - hardcoded
+        uses: microsoft/powerplatform-actions/who-am-i@v0
+        with:
+          environment-url: https://org89c5d0b2.crm.dynamics.com
+          app-id: ebdcb7b1-8e92-4ae1-b144-fcadc6014b84
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: e2642959-067c-4ff5-ba76-d4cf80a4f58f    
+          
       - name: verify connection to power platform
         uses: microsoft/powerplatform-actions/who-am-i@v0
         with:
