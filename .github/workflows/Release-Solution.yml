@@ -33,20 +33,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           lfs: true
-          
-      - name: See if things are where we want them
-        run: |
-          dir .\${{ env.SOLUTION_SOURCE_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}
-        shell: pwsh
-          
-      - name: verify connection to power platform - hardcoded
-        uses: microsoft/powerplatform-actions/who-am-i@v0
-        with:
-          environment-url: https://org89c5d0b2.crm.dynamics.com
-          app-id: ebdcb7b1-8e92-4ae1-b144-fcadc6014b84
-          client-secret: ${{ secrets.PowerPlatformSPN }}
-          tenant-id: e2642959-067c-4ff5-ba76-d4cf80a4f58f    
-          
+      
       - name: verify connection to power platform
         uses: microsoft/powerplatform-actions/who-am-i@v0
         with:
@@ -63,10 +50,26 @@ jobs:
           solution-type: Unmanaged
       
       - name: import solution to build environment
-        run: echo importing unmanaged solution to build environment
+        uses: microsoft/powerplatform-actions/import-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.envSecret }}
+          tenant-id: ${{vars.TENANT_ID}}
+          solution-file: ${{ env.SOLUTION_OUTBOUND_FOLDER }}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
+          force-overwrite: true
+          publish-changes: true
       
       - name: export managed solution
-        run: echo exporting managed solution
+        uses: microsoft/powerplatform-actions/export-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.envSecret }} 
+          tenant-id: ${{vars.TENANT_ID}}
+          solution-name: ${{ vars.solution_name }}
+          managed: true
+          solution-output-file: ${{ env.SOLUTION_SHIPPING_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_managed.zip
       
       - name: check exported solution
         run: echo checking consistency of managed solution
