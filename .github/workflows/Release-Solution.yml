@@ -154,6 +154,7 @@ jobs:
           force-overwrite: true
           publish-changes: true
           deployment-settings-file: .\testupdate.json
+          use-deployment-settings-file: true
 
   deploy-to-prod:
     environment: prod
