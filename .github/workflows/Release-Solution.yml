@@ -154,7 +154,7 @@ jobs:
           solution-file: .\artifacts/${{ vars.SOLUTION_NAME }}.zip
           force-overwrite: true
           publish-changes: true
-          deployment-settings-file: .\testupdate-fail.json
+          deployment-settings-file: .\testupdate.json
           use-deployment-settings-file: true
 
   deploy-to-prod:
