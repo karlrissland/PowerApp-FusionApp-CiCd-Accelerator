@@ -144,6 +144,12 @@ jobs:
           type .\testupdate.json
         shell: pwsh
       
+      ###########################################################################################################
+      # NOTE: If the environment variable doesn't have a value and only a default value, there will be no change
+      #       When you actually have a value for the environment variable, a new json file is created when the
+      #       solution is exported.  Seems that using the deployment settings file to update that value won't 
+      #       work if you origionally didn't have a value / json file.
+      ###########################################################################################################
       - name: import unmanaged solution
         uses: microsoft/powerplatform-actions/import-solution@v0
         with:
@@ -168,10 +174,31 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: fetch managed solution from artifacts
-        run: echo fetring managed solution from release artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ vars.SOLUTION_NAME }}_artifacts
+          path: artifacts
       
       - name: update settings file
-        run: echo updating settings file for environment
+        run: |
+          dir
+          dir ./artifacts
+          $a = Get-Content '.\artifacts/ALMLab_SettingsFile.json' -raw | ConvertFrom-Json
+          $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the production environment'}}
+          $a | ConvertTo-Json -Depth 100 | Set-Content '.\testupdate.json'
+          dir
+          type .\testupdate.json
+        shell: pwsh
       
       - name: import managed solution
-        run: echo importing unmanaged solution
+        uses: microsoft/powerplatform-actions/import-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{vars.TENANT_ID}}
+          solution-file: .\artifacts/${{ vars.SOLUTION_NAME }}_managed.zip
+          force-overwrite: true
+          publish-changes: true
+          deployment-settings-file: .\testupdate.json
+          use-deployment-settings-file: true
