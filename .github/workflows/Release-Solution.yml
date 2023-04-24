@@ -144,7 +144,16 @@ jobs:
         shell: pwsh
       
       - name: import unmanaged solution
-        run: echo importing unmanaged solution
+        uses: microsoft/powerplatform-actions/import-solution@v0
+        with:
+          environment-url: ${{vars.ENVIRONMENT_URL}}
+          app-id: ${{vars.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{vars.TENANT_ID}}
+          solution-file: .\artifacts/${{ vars.SOLUTION_NAME }}.zip
+          force-overwrite: true
+          publish-changes: true
+          deployment-settings-file: .\testupdate.json
 
   deploy-to-prod:
     environment: prod
