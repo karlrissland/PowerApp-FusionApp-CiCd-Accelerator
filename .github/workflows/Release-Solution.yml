@@ -137,6 +137,10 @@ jobs:
         run: |
           dir
           dir ./artifacts
+          $a = Get-Content '.\artifacts/ALMLab_SettingsFile.json' -raw | ConvertFrom-Json
+          $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the test environment'}}
+          $a | ConvertTo-Json -Depth 100 | Set-Content '.\testupdate.json'
+          dir
         shell: pwsh
       
       - name: import unmanaged solution
