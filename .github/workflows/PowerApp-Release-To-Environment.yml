@@ -18,7 +18,6 @@ env:
   SOLUTION_FOLDER: out/solutions/
   SOLUTION_TARGET_FOLDER: powerPlatSolutions/
   SOLUTION_SHIPPING_FOLDER: out/ship
-  SOLUTION_NAME: ${{ vars.SOLUTION_NAME }}.zip
 
 jobs:
   deploy:
@@ -33,10 +32,11 @@ jobs:
         with:
           lfs: true
           
-      - name: set solution as managed conditionally
-        run: |
-          write-host $SOLUTION_NAME
-        shell: pwsh
+      - name: set solution as managed or unmanaged conditionally
+        uses: marcdomain/set-variables@v1
+        with:
+          variables: |
+            SOLUTION_NAME: ${{vars.DEPLOY_MANAGED}} ? "${{ vars.SOLUTION_NAME }}_managed.zip" : "${{ vars.SOLUTION_NAME }}.zip"
       
       - name: check packed solution
         if: ${{vars.CHECK_CONSISTENCY}}
@@ -46,7 +46,7 @@ jobs:
           app-id: ${{vars.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{vars.TENANT_ID}}
-          path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
+          path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
       
       - name: update settings file
         run: |
@@ -70,7 +70,7 @@ jobs:
           app-id: ${{vars.CLIENT_ID}}
           client-secret: ${{ secrets.PowerPlatformSPN }}
           tenant-id: ${{vars.TENANT_ID}}
-          solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
+          solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
           force-overwrite: true
           publish-changes: true
           deployment-settings-file: .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json
