@@ -1,0 +1,18 @@
+# This is a basic workflow to help you get started with Actions
+
+name: PowerApp-Release-Solution-To-Test-Prod
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Deploy-to-Test-and-Prod:
+    strategy:
+      matrix:
+        targetEnvironment: [Test, Prod]
+    uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
+    with: 
+      environment: ${{matrix.targetEnvironment}}
