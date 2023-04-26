@@ -45,7 +45,7 @@ jobs:
         run: |
           dir .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
           $a = Get-Content '.\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_SettingsFile.json' -raw | ConvertFrom-Json
-          $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the test environment'}}
+          $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the updated environment variable'}}
           $a | ConvertTo-Json -Depth 100 | Set-Content '.\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json'
           type .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json
         shell: pwsh
