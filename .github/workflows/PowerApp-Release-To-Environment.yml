@@ -36,7 +36,7 @@ jobs:
         uses: marcdomain/set-variables@v1
         with:
           variables: |
-            SOLUTION_NAME: ${{vars.DEPLOY_MANAGED}} ? "${{ vars.SOLUTION_NAME }}_managed.zip" : "${{ vars.SOLUTION_NAME }}.zip"
+            SOLUTION_NAME: "${{vars.DEPLOY_MANAGED}}" == "true" ? "${{ vars.SOLUTION_NAME }}_managed.zip" : "${{ vars.SOLUTION_NAME }}.zip"
       
       - name: check packed solution
         if: ${{vars.CHECK_CONSISTENCY}}
