@@ -88,7 +88,7 @@ jobs:
         .\pac\tools\pac.exe solution create-settings --solution-zip ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip --settings-file ${{ github.event.inputs.solution_name }}_SettingsFile.json
         write-host "-----copy settings file so included in branch-----"
         dir
-        mkdir .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
+        mkdir .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
         copy .\${{ github.event.inputs.solution_name }}_SettingsFile.json .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_SettingsFile.json
         copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}.zip
         copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_managed.zip
