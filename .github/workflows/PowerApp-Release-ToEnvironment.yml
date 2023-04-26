@@ -22,7 +22,7 @@ env:
 jobs:
   deploy:
     environment: ${{ github.event.inputs.environment }}
-    if: ${{ github.event.inputs.environment }} != 'Dev'  #Don't want to inadvertantly deploy back to dev as it is our starting point
+    if: ${{ github.event.inputs.environment != 'Dev'}}  #Don't want to inadvertantly deploy back to dev as it is our starting point
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
@@ -66,6 +66,6 @@ jobs:
           solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
           force-overwrite: true
           publish-changes: true
-          deployment-settings-file: .\Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json
+          deployment-settings-file: .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json
           use-deployment-settings-file: true
 
