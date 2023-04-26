@@ -104,7 +104,7 @@ jobs:
         
     - name: Dir listing of staging folder
       run: |
-        dir .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts
+        dir .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
 
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
