@@ -18,6 +18,7 @@ env:
   SOLUTION_FOLDER: out/solutions/
   SOLUTION_TARGET_FOLDER: powerPlatSolutions/
   SOLUTION_SHIPPING_FOLDER: out/ship
+  SOLUTION_NAME: ${{ vars.SOLUTION_NAME }}.zip
 
 jobs:
   deploy:
