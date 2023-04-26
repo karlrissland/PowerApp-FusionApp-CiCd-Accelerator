@@ -33,7 +33,13 @@ jobs:
         with:
           lfs: true
           
-      - name: check packed unmanaged solution
+      - name: set solution as managed conditionally
+        run: |
+          write-host $SOLUTION_NAME
+        shell: pwsh
+      
+      - name: check packed solution
+        if: ${{vars.CHECK_CONSISTENCY}}
         uses: microsoft/powerplatform-actions/check-solution@v0
         with:
           environment-url: ${{vars.ENVIRONMENT_URL}}
