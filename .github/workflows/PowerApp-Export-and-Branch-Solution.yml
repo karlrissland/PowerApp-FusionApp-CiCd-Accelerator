@@ -66,7 +66,7 @@ jobs:
         environment-url: ${{vars.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{varsTENANT_ID}}
+        tenant-id: ${{vars.TENANT_ID}}
         path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
 
     - name: Check Managed Solution Consistency
