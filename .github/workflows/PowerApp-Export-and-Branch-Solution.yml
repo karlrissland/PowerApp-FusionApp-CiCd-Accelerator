@@ -10,28 +10,16 @@ on:
         description: 'name of the solution to worked on from Power Platform'
         required: true
         default: ALMLab
-       #Do Not change these values
-      solution_exported_folder:
-        description: 'folder name for staging the exported solution *do not change*'
-        required: true
-        default: out/exported/
-      solution_folder:
-        description: 'staging the unpacked solution folder before check-in *do not change*'
-        required: true
-        default: out/solutions/
-      solution_target_folder: 
-       description: 'folder name to be created and checked in *do not change*'
-       required: true
-       default: powerPlatSolutions/
 env:
 #edit your values here
-  ENVIRONMENT_URL: 'https://orgf09d22c3.crm.dynamics.com/'
-  CLIENT_ID: 'ebdcb7b1-8e92-4ae1-b144-fcadc6014b84'
-  TENANT_ID: 'e2642959-067c-4ff5-ba76-d4cf80a4f58f'
+  SOLUTION_EXPORTED_FOLDER: out/exported/
+  SOLUTION_FOLDER: out/solutions/
+  SOLUTION_TARGET_FOLDER: powerPlatSolutions/
 permissions:
   contents: write
 jobs:
   export-from-dev:
+    environment: dev
     runs-on: windows-latest
     # or you can say runs-on: ubuntu-latest
     env:
@@ -45,50 +33,50 @@ jobs:
     - name: who-am-i action
       uses: microsoft/powerplatform-actions/who-am-i@v0
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
+        environment-url: ${{vars.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
+        tenant-id: ${{vars.TENANT_ID}}
 
     - name: export unmanaged solution
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
+        environment-url: ${{vars.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
+        tenant-id: ${{vars.TENANT_ID}}
         solution-name: ${{ github.event.inputs.solution_name }}
-        solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
 
     - name: export managed solution
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
+        environment-url: ${{vars.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
+        tenant-id: ${{vars.TENANT_ID}}
         solution-name: ${{ github.event.inputs.solution_name }}
         managed: true
-        solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip
 
 
     - name: Check unManaged Solution Consistency
       uses: microsoft/powerplatform-actions/check-solution@v0
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
+        environment-url: ${{vars.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
-        path: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+        tenant-id: ${{varsTENANT_ID}}
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
 
     - name: Check Managed Solution Consistency
       uses: microsoft/powerplatform-actions/check-solution@v0
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{env.CLIENT_ID}}
+        environment-url: ${{vars.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
-        tenant-id: ${{env.TENANT_ID}}
-        path: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        tenant-id: ${{vars.TENANT_ID}}
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip
 
     - name: install pac CLI, create settings file, stage artifacts
       run: |
@@ -97,20 +85,20 @@ jobs:
         write-host "-----expanding nuget archive into .\pac-----"
         Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg .\pac
         write-host "-----creating settings file-----"
-        .\pac\tools\pac.exe solution create-settings --solution-zip ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip --settings-file ${{ github.event.inputs.solution_name }}_SettingsFile.json
+        .\pac\tools\pac.exe solution create-settings --solution-zip ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip --settings-file ${{ github.event.inputs.solution_name }}_SettingsFile.json
         write-host "-----copy settings file so included in branch-----"
         dir
-        mkdir .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts
-        copy .\${{ github.event.inputs.solution_name }}_SettingsFile.json .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_SettingsFile.json
-        copy .\${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}.zip
-        copy .\${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}_managed.zip .\${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_managed.zip
+        mkdir .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
+        copy .\${{ github.event.inputs.solution_name }}_SettingsFile.json .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_SettingsFile.json
+        copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}.zip
+        copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}_managed.zip
       shell: pwsh
         
     - name: unpack-solution action
       uses: microsoft/powerplatform-actions/unpack-solution@v0
       with:
-        solution-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
-        solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}
+        solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}
         solution-type: 'Unmanaged'
         overwrite-files: true
         
@@ -121,7 +109,7 @@ jobs:
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
       with:
-        solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}_artifacts
-        solution-target-folder: ${{ github.event.inputs.solution_target_folder}}/${{ github.event.inputs.solution_name }}_artifacts
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
+        solution-target-folder: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         allow-empty-commit: true
