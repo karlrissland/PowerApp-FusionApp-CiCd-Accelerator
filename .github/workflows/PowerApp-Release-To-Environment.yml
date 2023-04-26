@@ -63,7 +63,7 @@ jobs:
       #       solution is exported.  Seems that using the deployment settings file to update that value won't 
       #       work if you origionally didn't have a value / json file.
       ###########################################################################################################
-      - name: import unmanaged solution
+      - name: import solution
         uses: microsoft/powerplatform-actions/import-solution@v0
         with:
           environment-url: ${{vars.ENVIRONMENT_URL}}
