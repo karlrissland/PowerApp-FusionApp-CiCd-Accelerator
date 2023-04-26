@@ -46,7 +46,7 @@ jobs:
           dir .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
           $a = Get-Content '.\a${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_SettingsFile.json' -raw | ConvertFrom-Json
           $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the test environment'}}
-          $a | ConvertTo-Json -Depth 100 | Set-Content '.\Updated${{ vars.SOLUTION_NAME }}_SettingsFile.json'
+          $a | ConvertTo-Json -Depth 100 | Set-Content '.\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json'
           dir
           type .\testupdate.json
         shell: pwsh
@@ -67,6 +67,6 @@ jobs:
           solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}.zip
           force-overwrite: true
           publish-changes: true
-          deployment-settings-file: .\Updated${{ vars.SOLUTION_NAME }}_SettingsFile.json
+          deployment-settings-file: .\Updated_${{ vars.SOLUTION_NAME }}_SettingsFile.json
           use-deployment-settings-file: true
 
