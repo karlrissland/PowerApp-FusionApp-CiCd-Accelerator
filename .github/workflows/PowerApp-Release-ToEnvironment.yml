@@ -43,7 +43,7 @@ jobs:
       - name: update settings file
         run: |
           dir
-          dir .\a${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
+          dir .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts
           $a = Get-Content '.\a${{ env.SOLUTION_TARGET_FOLDER}}/${{ vars.SOLUTION_NAME }}_artifacts/${{ vars.SOLUTION_NAME }}_SettingsFile.json' -raw | ConvertFrom-Json
           $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the test environment'}}
           $a | ConvertTo-Json -Depth 100 | Set-Content '.\Updated${{ vars.SOLUTION_NAME }}_SettingsFile.json'
