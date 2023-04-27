@@ -3,6 +3,9 @@ name: PowerApp-Export-and-Branch-Solution
 #  unpack it and prepare, commit and push a git branch with the changes
 
 on:
+  repository_dispatch:
+    types: [ALMLab_Extract]
+
   workflow_dispatch:
     inputs:
       # Change this value
