@@ -11,6 +11,7 @@ jobs:
   # This workflow contains a single job called "build"
   Deploy-to-Test-and-Prod:
     strategy:
+      max-parallel: 1
       matrix:
         targetEnvironment: [Test, Prod]
     uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
