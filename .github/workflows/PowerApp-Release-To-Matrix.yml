@@ -15,13 +15,11 @@ jobs:
       matrix:
         targetEnvironment: [Test, Prod]
         
-    runs-on: windows-latest
-    
-    steps:    
-      - uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
-        with: 
-          environment: ${{matrix.targetEnvironment}}
-          
-      - run: |
-          write-host environment: ${{matrix.targetEnvironment}}
-        shell: pwsh
+    permissions:
+      id-token: write
+      contents: read
+        
+    uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
+    with: 
+      environment: ${{matrix.targetEnvironment}}
+
