@@ -50,7 +50,7 @@ jobs:
           write-host SOLUTION_NAME: ${{vars.SOLUTION_NAME}}
           write-host TENANT_ID: ${{vars.TENANT_ID}}
           write-host Environment: ${{ github.event.inputs.environment }}
-          write-host Dispatch Event: ${{github.GITHUB_EVENT_NAME}}
+          write-host Dispatch Event: ${{github.EVENT_NAME}}
         shell: pwsh
     
       - uses: actions/checkout@v3
