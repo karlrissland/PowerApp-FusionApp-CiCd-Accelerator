@@ -29,11 +29,31 @@ jobs:
     - uses: actions/checkout@v3
       with:
         lfs: true
+        
+    - name: set solution as managed or unmanaged conditionally
+      uses: marcdomain/set-variables@v1
+      with:
+        variables: |
+            SOLUTION_NAME: "${{github.EVENT_NAME}}" == "workflow_dispatch" ? "${{ github.event.inputs.solution_name }}" : "${{ github.event.client_payload.solution_name }}"
+            ENVIRONMENT_URL: "${{github.EVENT_NAME}}" == "workflow_dispatch" ? "${{ vars.ENVIRONMENT_URL }}" : "${{ github.event.client_payload.EnvironmentUrl }}"
+
+    - run: |
+          write-host SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}
+          write-host SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}
+          write-host SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}
+
+          write-host ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}
+          write-host SOLUTION_NAME: ${{env.SOLUTION_NAME}}
+          write-host TENANT_ID: ${{vars.TENANT_ID}}
+          write-host Environment: ${{ github.event.inputs.environment }}
+          write-host Dispatch Event: ${{github.EVENT_NAME}}
+      shell: pwsh
+
 
     - name: who-am-i action
       uses: microsoft/powerplatform-actions/who-am-i@v0
       with:
-        environment-url: ${{vars.ENVIRONMENT_URL}}
+        environment-url: ${{env.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{vars.TENANT_ID}}
@@ -41,42 +61,42 @@ jobs:
     - name: export unmanaged solution
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
-        environment-url: ${{vars.ENVIRONMENT_URL}}
+        environment-url: ${{env.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{vars.TENANT_ID}}
-        solution-name: ${{ github.event.inputs.solution_name }}
-        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
+        solution-name: ${{ env.SOLUTION_NAME }}
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
 
     - name: export managed solution
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
-        environment-url: ${{vars.ENVIRONMENT_URL}}
+        environment-url: ${{env.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{vars.TENANT_ID}}
-        solution-name: ${{ github.event.inputs.solution_name }}
+        solution-name: ${{ env.SOLUTION_NAME }}
         managed: true
-        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip
 
 
     - name: Check unManaged Solution Consistency
       uses: microsoft/powerplatform-actions/check-solution@v0
       with:
-        environment-url: ${{vars.ENVIRONMENT_URL}}
+        environment-url: ${{env.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{vars.TENANT_ID}}
-        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
 
     - name: Check Managed Solution Consistency
       uses: microsoft/powerplatform-actions/check-solution@v0
       with:
-        environment-url: ${{vars.ENVIRONMENT_URL}}
+        environment-url: ${{env.ENVIRONMENT_URL}}
         app-id: ${{vars.CLIENT_ID}}
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{vars.TENANT_ID}}
-        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}_managed.zip
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip
 
     - name: install pac CLI, create settings file, stage artifacts
       run: |
@@ -97,19 +117,19 @@ jobs:
     - name: unpack-solution action
       uses: microsoft/powerplatform-actions/unpack-solution@v0
       with:
-        solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ github.event.inputs.solution_name }}.zip
-        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts/${{ github.event.inputs.solution_name }}
+        solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME}}_artifacts/${{ env.SOLUTION_NAME }}
         solution-type: 'Unmanaged'
         overwrite-files: true
         
     - name: Dir listing of staging folder
       run: |
-        dir .\${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
+        dir .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
 
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
       with:
-        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
-        solution-target-folder: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ github.event.inputs.solution_name }}_artifacts
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+        solution-target-folder: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         allow-empty-commit: true
