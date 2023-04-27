@@ -22,4 +22,5 @@ jobs:
     uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
     with: 
       environment: ${{matrix.targetEnvironment}}
+    secrets: inherit
 
