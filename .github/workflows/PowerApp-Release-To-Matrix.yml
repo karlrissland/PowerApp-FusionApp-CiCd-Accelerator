@@ -14,6 +14,14 @@ jobs:
       max-parallel: 1
       matrix:
         targetEnvironment: [Test, Prod]
-    uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
-    with: 
-      environment: ${{matrix.targetEnvironment}}
+        
+    runs-on: windows-latest
+    
+    steps:    
+      - uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
+        with: 
+          environment: ${{matrix.targetEnvironment}}
+          
+      - run: |
+          write-host environment: ${{matrix.targetEnvironment}}
+        shell: pwsh
