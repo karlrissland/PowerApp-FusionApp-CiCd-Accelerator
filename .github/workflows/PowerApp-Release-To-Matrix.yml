@@ -1,26 +1,26 @@
-# This is a basic workflow to help you get started with Actions
+# NOTE: Tried to use a Matrix Strategy, but the child workflows 
+#       were not reading from the environment correctly
 
-name: PowerApp-Release-Solution-To-Matrix
+name: PowerApp-Release-Solution-To-All-Environments
 
-# Controls when the workflow will run
 on:
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  Deploy-to-Test-and-Prod:
-    strategy:
-      max-parallel: 1
-      matrix:
-        targetEnvironment: [Test, Prod]
-        
-    permissions:
+permissions:
       id-token: write
       contents: read
-        
+
+jobs:
+  Deploy-To-Test:
     uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
-    with: 
-      environment: ${{matrix.targetEnvironment}}
+    with:
+      environment: Test
+    secrets: inherit
+    
+  Deploy-To-Prod:
+    needs: Deploy-To-Test     
+    uses: ./.github/workflows/PowerApp-Release-To-Environment.yml
+    with:
+      environment: Prod
     secrets: inherit
 
