@@ -18,6 +18,11 @@ on:
         type: environment
         description: 'environment to run on'
         required: true
+        
+permissions:
+  id-token: write
+  contents: read
+  
 env:
   SOLUTION_EXPORTED_FOLDER: out/exported/
   SOLUTION_FOLDER: out/solutions/
