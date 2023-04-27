@@ -33,6 +33,20 @@ jobs:
       RUNNER_DEBUG: 1
       
     steps:
+      - run: |
+          write-host SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}
+          write-host SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}
+          write-host SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}
+          write-host SOLUTION_SHIPPING_FOLDER: ${{env.SOLUTION_SHIPPING_FOLDER}}
+          write-host CHECK_CONSISTENCY: ${{vars.CHECK_CONSISTENCY}}
+          write-host CLIENT_ID: ${{vars.CLIENT_ID}}
+          write-host DEPLOY_MANGED: ${{vars.DEPLOY_MANAGED}}
+          write-host ENVIRONMENT_URL: ${{vars.ENVIRONMENT_URL}}
+          write-host SOLUTION_NAME: ${{vars.SOLUTION_NAME}}
+          write-host TENANT_ID: ${{vars.TENANT_ID}}
+          write-host Environment: ${{ github.event.inputs.environment }}
+        shell: pwsh
+    
       - uses: actions/checkout@v3
         with:
           lfs: true
