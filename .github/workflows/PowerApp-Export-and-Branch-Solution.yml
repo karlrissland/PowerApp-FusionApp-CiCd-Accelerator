@@ -111,7 +111,10 @@ jobs:
         .\pac\tools\pac.exe solution create-settings --solution-zip ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip --settings-file ${{ env.SOLUTION_NAME}}_SettingsFile.json
         write-host "-----copy settings file so included in branch-----"
         dir
+        write-host "--------- making directory"
         mkdir .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+        write-host "---------- made directory .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts"
+        write-host "---------- copying settings file to .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_SettingsFile.json
         copy .\${{env.SOLUTION_NAME }}_SettingsFile.json .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_SettingsFile.json
         copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}.zip
         copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_managed.zip
