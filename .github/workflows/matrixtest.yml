@@ -10,6 +10,7 @@ on:
         type: environment
         required: true
         default: 'dev'
+        
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -17,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        value: ${{ vars.MATRIXTEST }}
+        value: ["ALMLab","GitHub"] #Looks like this needs to be hard coded
     steps:
       - run: |
           write-host "hello... ${{ matrix.value }}"
