@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: matrixtest
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: true
+        default: 'dev'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  example_matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        value: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - run: |
+          write-host "hello... ${{ matrix.value }}"
+        shell: pwsh
