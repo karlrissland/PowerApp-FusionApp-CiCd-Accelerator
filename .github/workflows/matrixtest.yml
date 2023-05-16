@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        value: [1, 2, 3, 4, 5, 6, 7]
+        value: ${{ vars.MATRIXTEST }}
     steps:
       - run: |
           write-host "hello... ${{ matrix.value }}"
