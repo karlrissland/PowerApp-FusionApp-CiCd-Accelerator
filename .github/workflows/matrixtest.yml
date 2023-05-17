@@ -48,7 +48,7 @@ jobs:
       #      ${{ matrix.value == 'ALMLAB'}} => ${{vars.ALMLAB_SETTINGSFILE}}
       #      ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
       - run: |
-         $Env:SomeTestVariable = "Test Variable Result"
+         "SomeTestVariable=testvariablecontents" >> $env:GITHUB_ENV
         shell: pwsh
     
     
