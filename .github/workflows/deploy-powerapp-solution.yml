@@ -1,0 +1,113 @@
+name: deploy powerapp solution
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'environment to deploy to'
+        required: true
+        type: string
+      solutionName:
+        description: 'the name of the PowerApp Solution'
+        required: true
+        type: string
+        
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'environment to deploy to'
+        required: true
+        type: environment
+      solutionName:
+        description: 'environment to deploy to'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+  
+env:
+  SOLUTION_EXPORTED_FOLDER: out/exported/
+  SOLUTION_FOLDER: out/solutions/
+  SOLUTION_TARGET_FOLDER: powerPlatSolutions/
+  SOLUTION_SHIPPING_FOLDER: out/ship
+  
+jobs:
+  deploy:
+    environment: ${{ github.event.inputs.environment }}
+    if: ${{ github.event.inputs.environment != 'Dev'}}  #Don't want to inadvertantly deploy back to dev as it is our starting point
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+      CHECK_CONSISTENCY: ${{vars.CHECK_CONSISTENCY}}
+      DEPLOY_MANAGED: ${{vars.DEPLOY_MANAGED}}
+      ENVIRONMENT_URL: ${{vars.ENVIRONMENT_URL}}
+      SOLUTION_NAME: ${{vars.SOLUTION_NAME}}
+      TENANT_ID: ${{vars.TENANT_ID}}
+      CLIENT_ID: ${{vars.CLIENT_ID}}
+      
+    steps:
+      - run: |
+          write-host SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}
+          write-host SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}
+          write-host SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}
+          write-host SOLUTION_SHIPPING_FOLDER: ${{env.SOLUTION_SHIPPING_FOLDER}}
+          write-host CHECK_CONSISTENCY: ${{env.CHECK_CONSISTENCY}}
+          write-host CLIENT_ID: ${{env.CLIENT_ID}}
+          write-host DEPLOY_MANGED: ${{env.DEPLOY_MANAGED}}
+          write-host ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}
+          write-host SOLUTION_NAME: ${{env.SOLUTION_NAME}}
+          write-host TENANT_ID: ${{env.TENANT_ID}}
+          write-host Environment: ${{ github.event.inputs.environment }}
+          write-host Dispatch Event: ${{github.EVENT_NAME}}
+        shell: pwsh    
+    
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+    
+      - name: set solution as managed or unmanaged conditionally
+        uses: marcdomain/set-variables@v1
+        with:
+          variables: |
+            SOLUTION_NAME: "${{env.DEPLOY_MANAGED}}" == "true" ? "${{ env.SOLUTION_NAME }}_managed.zip" : "${{ env.SOLUTION_NAME }}.zip"
+      
+      - name: check packed solution
+        if: ${{env.CHECK_CONSISTENCY}}
+        uses: microsoft/powerplatform-actions/check-solution@v0
+        with:
+          environment-url: ${{env.ENVIRONMENT_URL}}
+          app-id: ${{env.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{env.TENANT_ID}}
+          path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
+      
+      - name: update settings file
+        run: |
+          dir .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+          $a = Get-Content '.\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_SettingsFile.json' -raw | ConvertFrom-Json
+          $a.EnvironmentVariables | ForEach-Object{if($_.SchemaName -eq 'almLab_TestEnvironmentVariable'){$_.Value = 'This is the updated environment variable'}}
+          $a | ConvertTo-Json -Depth 100 | Set-Content '.\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json'
+          type .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json
+        shell: pwsh
+      
+      ###########################################################################################################
+      # NOTE: If the environment variable doesn't have a value and only a default value, there will be no change
+      #       When you actually have a value for the environment variable, a new json file is created when the
+      #       solution is exported.  Seems that using the deployment settings file to update that value won't 
+      #       work if you origionally didn't have a value / json file.
+      ###########################################################################################################
+      - name: import solution
+        uses: microsoft/powerplatform-actions/import-solution@v0
+        with:
+          environment-url: ${{env.ENVIRONMENT_URL}}
+          app-id: ${{env.CLIENT_ID}}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{env.TENANT_ID}}
+          solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
+          force-overwrite: true
+          publish-changes: true
+          deployment-settings-file: .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json
+          use-deployment-settings-file: true
+
