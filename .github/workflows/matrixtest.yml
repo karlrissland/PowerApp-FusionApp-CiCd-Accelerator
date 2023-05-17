@@ -29,16 +29,25 @@ jobs:
     #  DynamicRef: ${{ vars.format('{0}_SETTINGSFILE','ALMLAB') }}
     
     steps:
-      - uses: kanga333/variable-mapper@master
+      ##### This doesn't like a JSON result
+      #- uses: kanga333/variable-mapper@master
+      #  with:
+      #    key: "${{matrix.value}}"
+      #    map : |
+      #      {
+      #        "ALMLAB":{"SettingsFile":"${{vars.ALMLAB_SETTINGSFILE}}"},
+      #        "GITHUB":{"SettingsFile":"${{vars.XGITHUB_SETTINGSFILE}}"}
+      #      }
+      
+      - uses: dkershner6/switch-case-action@v1
+        id: switch-case
         with:
-          key: "${{matrix.value}}"
-          map : |
-            {
-              "ALMLAB":{"SettingsFile":"${{vars.ALMLAB_SETTINGSFILE}}"},
-              "GITHUB":{"SettingsFile":"${{vars.XGITHUB_SETTINGSFILE}}"}
-            }
+          default: "This is the default value"
+          conditionals-with-values: |
+            ${{ matrix.value == 'ALMLAB'}} => ${{vars.ALMLAB_SETTINGSFILE}}
+            ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
     
       - run: |
           write-host "hello... ${{ matrix.value }}"
-          write-host "Settings File - ${{env.SettingsFile}}"
+          write-host "Settings File - ${{steps.switch-case.outputs.value}}"
         shell: pwsh
