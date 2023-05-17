@@ -49,5 +49,5 @@ jobs:
     
       - run: |
           write-host "hello... ${{ matrix.value }}"
-          write-host "Settings File - ${{steps.switch-case.outputs.value}}"
+          write-host @"Settings File - ${{steps.switch-case.outputs.value}}"@
         shell: pwsh
