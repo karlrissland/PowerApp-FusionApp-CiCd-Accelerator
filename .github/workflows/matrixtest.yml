@@ -20,6 +20,7 @@ on:
 jobs:
   example_matrix:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     strategy:
       matrix:
          value: ${{fromJson(inputs.testvar)}} #Need to pass in a JSON Array
