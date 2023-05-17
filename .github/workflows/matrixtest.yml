@@ -25,7 +25,7 @@ jobs:
          value: ${{fromJson(inputs.testvar)}} #Need to pass in a JSON Array
          
     env:
-      DynamicRef: ${{vars.[format('{0}_SETTINGSFILE,'ALMLAB')]}}
+      DynamicRef: ${{ vars.[format('{0}_SETTINGSFILE','ALMLAB')] }}
     
     steps:
       - run: |
