@@ -24,11 +24,11 @@ jobs:
       matrix:
          value: ${{fromJson(inputs.testvar)}} #Need to pass in a JSON Array
          
-    env:
-      DynamicRef: ${{ vars.format('{0}_SETTINGSFILE','ALMLAB') }}
+   # env:
+    #  DynamicRef: ${{ vars.format('{0}_SETTINGSFILE','ALMLAB') }}
     
     steps:
       - run: |
           write-host "hello... ${{ matrix.value }}"
-          write-host "DynamicRef - ${{env.DynamicRef}}"
+          write-host "Settings File - ${{vars.ALMLAB_SETTINGSFILE}}"
         shell: pwsh
