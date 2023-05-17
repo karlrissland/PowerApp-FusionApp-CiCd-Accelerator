@@ -35,7 +35,7 @@ jobs:
           map : |
             {
               "ALMLAB":{"SettingsFile":"${{vars.ALMLAB_SETTINGSFILE}}"},
-              "GITHUB:{"SettingsFile":"${{vars.XGITHUB_SETTINGSFILE}}"}
+              "GITHUB":{"SettingsFile":"${{vars.XGITHUB_SETTINGSFILE}}"}
             }
     
       - run: |
