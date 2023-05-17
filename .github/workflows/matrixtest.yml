@@ -39,17 +39,20 @@ jobs:
       #        "GITHUB":{"SettingsFile":"${{vars.XGITHUB_SETTINGSFILE}}"}
       #      }
       
-      - uses: dkershner6/switch-case-action@v1
-        id: switch-case
-        with:
-          default: "This is the default value"
-          conditionals-with-values: |
-            ${{ matrix.value == 'ALMLAB'}} => ${{vars.ALMLAB_SETTINGSFILE}}
-            ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
+      ##### This appears to work but write-host is only showing one line
+      #- uses: dkershner6/switch-case-action@v1
+      #  id: switch-case
+      #  with:
+      #    default: "This is the default value"
+      #    conditionals-with-values: |
+      #      ${{ matrix.value == 'ALMLAB'}} => ${{vars.ALMLAB_SETTINGSFILE}}
+      #      ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
+      - run: |
+         $Env:SomeTestVariable = "Test Variable Result"
+        shell: pwsh
+    
     
       - run: |
           write-host "hello... ${{ matrix.value }}"
-          write-host @"
-          Settings File - ${{steps.switch-case.outputs.value}}
-          "@
+          write-host "SomeTestVariable - ${{env.SomeTestVariable}}"
         shell: pwsh
