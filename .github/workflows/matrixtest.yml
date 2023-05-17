@@ -13,7 +13,7 @@ on:
         
       testvar:
         type: string
-        default: '["1","2","3"]' #setting up the JSON array for the matrix
+        default: '["ALMLAB","GITHUB"]' #setting up the JSON array for the matrix
         
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -29,7 +29,16 @@ jobs:
     #  DynamicRef: ${{ vars.format('{0}_SETTINGSFILE','ALMLAB') }}
     
     steps:
+      - uses: kanga333/variable-mapper@master
+        with:
+          key: "${{matrix.value}}"
+          map : |
+            {
+              "ALMLAB":{"SettingsFile":"${{vars.ALMLAB_SETTINGSFILE}}"},
+              "GITHUB:{"SettingsFile":"${{vars.GITHUB_SETTINGSFILE}}"}
+            }
+    
       - run: |
           write-host "hello... ${{ matrix.value }}"
-          write-host "Settings File - ${{vars.ALMLAB_SETTINGSFILE}}"
+          write-host "Settings File - ${{env.SettingsFile}}"
         shell: pwsh
