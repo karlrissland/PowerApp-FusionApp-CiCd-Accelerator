@@ -49,7 +49,7 @@ jobs:
       #      ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
       
       - run: |
-          $a = ${{ matrix.value }}
+          $a = "${{ matrix.value }}"
           switch($a){
             "ALMLAB"{"SomeTestVariable=testvariablecontentsALMLAB" >> $env:GITHUB_ENV}
             "GITHUB"{"SomeTestVariable=testvariablecontentsGITHUB" >> $env:GITHUB_ENV}
