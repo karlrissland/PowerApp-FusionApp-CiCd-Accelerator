@@ -1,7 +1,6 @@
 ########################################################################
 # This workflow will deploy all app components to a specific environment
 ########################################################################
-
 name: Deploy To Environment
 
 on:
@@ -30,7 +29,7 @@ permissions:
 #######################################################################
 jobs:
   ALMLab-call-powerapp-solution-deployment: 
-    uses: ./.github/workflows/matrixtest.yml
+    uses: ./.github/workflows/deploy-powerapp-solution.yml
     with:
       environment: ${{ inputs.environment }}
       settingsfile: ${{vars.ALMLAB_SETTINGSFILE}}
@@ -38,7 +37,7 @@ jobs:
     secrets: inherit
     
   GITHUB-call-powerapp-solution-deployment: 
-    uses: ./.github/workflows/matrixtest.yml
+    uses: ./.github/workflows/deploy-powerapp-solution.yml
     with:
       environment: ${{ inputs.environment }}
       settingsfile: ${{vars.XGITHUB_SETTINGSFILE}}
