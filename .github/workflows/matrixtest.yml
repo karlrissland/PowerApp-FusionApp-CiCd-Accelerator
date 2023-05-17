@@ -51,8 +51,8 @@ jobs:
       - run: |
           $a = "${{ matrix.value }}"
           switch($a){
-            "ALMLAB"{$s="${{fromJson(vars.ALMLAB_SETTINGSFILE)}}"}
-            "GITHUB"{$s="${{fromJson(vars.XGITHUB_SETTINGSFILE)}}"}
+            "ALMLAB"{$s="${{vars.ALMLAB_SETTINGSFILE}}"}
+            "GITHUB"{$s="${{vars.XGITHUB_SETTINGSFILE}}"}
           }
           write-host $s
         shell: pwsh
