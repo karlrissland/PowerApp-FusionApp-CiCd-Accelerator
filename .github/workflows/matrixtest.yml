@@ -11,6 +11,10 @@ on:
         required: true
         default: 'dev'
         
+      testvar:
+        type: string
+        default: '["1","2","3"]'
+        
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -18,7 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        value: ["ALMLab","GitHub"] #Looks like this needs to be hard coded
+         #value: ["ALMLAB"] #Looks like this needs to be hard coded
+         value: ${{fromJson(inputs.testvar)}}
+         
+   # env:
+   #   DynamicRef: ${{vars.[format('{0}]}}
+    
     steps:
       - run: |
           write-host "hello... ${{ matrix.value }}"
