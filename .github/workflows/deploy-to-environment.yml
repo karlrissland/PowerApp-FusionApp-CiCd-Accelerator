@@ -1,0 +1,57 @@
+########################################################################
+# This workflow will deploy all app components to a specific environment
+########################################################################
+
+name: Deploy To Environment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'environment to deploy solution to'
+        required: true
+        type: string
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'environment to deploy solution to'
+        required: true
+        type: environment
+        
+permissions:
+  id-token: write
+  contents: read
+
+#######################################################################
+# Need to call deploy-powerapp-solution.yml for each solution so we   #
+# pass in the settings for each solution.  Have not found a way to    #
+# programatically select a variable for use.                           #
+#######################################################################
+jobs:
+  ALMLab-call-powerapp-solution-deployment: 
+    uses: ./.github/workflows/matrixtest.yml
+    with:
+      environment: ${{ inputs.environment }}
+      settingsfile: ${{vars.ALMLAB_SETTINGSFILE}}
+      solutionName: "ALMLab"
+    secrets: inherit
+    
+  GITHUB-call-powerapp-solution-deployment: 
+    uses: ./.github/workflows/matrixtest.yml
+    with:
+      environment: ${{ inputs.environment }}
+      settingsfile: ${{vars.XGITHUB_SETTINGSFILE}}
+      solutionName: "GITHUB"
+    secrets: inherit
+    
+  ################################################  
+  # Use this template to call reusable workflows #
+  # to deploy other parts of the app             #
+  ################################################
+  #SomeOtherComponent-Call-somethingelse-deployment
+  #  uses: ./.github/workflows/component-deployment.yml
+  #  with:
+  #    environment: ${{ inputs.environment }}
+  #    <other variables to pass>
+  #  secrets: inherit
