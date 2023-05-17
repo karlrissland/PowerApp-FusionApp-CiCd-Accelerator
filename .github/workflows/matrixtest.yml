@@ -51,8 +51,8 @@ jobs:
       - run: |
           $a = "${{ matrix.value }}"
           switch($a){
-            "ALMLAB"{"SomeTestVariable=testvariablecontentsALMLAB" >> $env:GITHUB_ENV}
-            "GITHUB"{"SomeTestVariable=testvariablecontentsGITHUB" >> $env:GITHUB_ENV}
+            "ALMLAB"{"SomeTestVariable=${{vars.ALMLAB_SETTINGSFILE}}" >> $env:GITHUB_ENV}
+            "GITHUB"{"SomeTestVariable=${{vars.XGITHUB_SETTINGSFILE}}" >> $env:GITHUB_ENV}
           }
         shell: pwsh
     
