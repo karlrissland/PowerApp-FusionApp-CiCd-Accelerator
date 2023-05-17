@@ -13,7 +13,7 @@ on:
         
       testvar:
         type: string
-        default: '["1","2","3"]'
+        default: '["1","2","3"]' #setting up the JSON array for the matrix
         
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -22,13 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-         #value: ["ALMLAB"] #Looks like this needs to be hard coded
-         value: ${{fromJson(inputs.testvar)}}
+         value: ${{fromJson(inputs.testvar)}} #Need to pass in a JSON Array
          
-   # env:
-   #   DynamicRef: ${{vars.[format('{0}]}}
+    env:
+      DynamicRef: ${{vars.[format('{0}_SETTINGSFILE,'ALMLAB']}}
     
     steps:
       - run: |
           write-host "hello... ${{ matrix.value }}"
+          write-host "DynamicRef - ${{env.DynamicRef}}"
         shell: pwsh
