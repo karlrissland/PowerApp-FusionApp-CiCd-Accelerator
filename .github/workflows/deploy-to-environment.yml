@@ -29,54 +29,62 @@ permissions:
 #######################################################################
 
 jobs:
+  ##############################################################
+  # Need to setup variables in a job and pass as output as you #
+  # can't seem to use an environment when calling a reusable   #
+  # workflow.                                                  #
+  ##############################################################
   variablesetup:
     environment: ${{ github.event.inputs.environment}}
     runs-on: windows-latest
-    
     steps:
       - name: setvariables
         run: |
           write-host environment ${{ github.event.inputs.environment }}
         shell: pwsh
     outputs:
-      ENVIRONMENT: ${{ github.event.inputs.environment}}
-      ALMLAB_SETTINGS_FILE: "Hard Coded"
-      GITHUB_SETTINGS_FILE: ${{vars.XGITHUB_SETTINGSFILE}}
+      ENVIRONMENT: ${{ github.event.inputs.environment }}
+      ALMLAB_SETTINGS_FILE: ${{ vars.ALMLab_SETTINGSFILE }}
+      GITHUB_SETTINGS_FILE: ${{ vars.XGITHUB_SETTINGSFILE }}
 
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
+     needs: variablesetup
      with:
        environment: ${{ inputs.environment }}
-       settingsfilecontents: "HardCoded-fix!"
-       solutionName: "GITHUB"
+       settingsfilecontents: ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
+       solutionName: "ALMLAB"
      secrets: inherit
   
-  variableread:
-    runs-on: windows-latest
-    needs: variablesetup
-
-    steps:
-      - run: |
-          write-host environment ${{ needs.variablesetup.outputs.ENVIRONMENT }}
-          write-host almlab settings ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
-          write-host github settings ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
-        shell: pwsh
-
   #GITHUB-call-powerapp-solution-deployment: 
   #  uses: ./.github/workflows/deploy-powerapp-solution.yml
+  #  needs: variablesetup
   #  with:
-  #    environment: ${{ inputs.environment }}
-  #    settingsfilecontents: ${{env.GITHUB_SETTINGSFILE}}
+  #    environment: ${{ needs.variablesetup.outputs.ENVIRONMENT }}
+  #    settingsfilecontents: ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
   #    solutionName: "GITHUB"
   #  secrets: inherit
-    
+  
   ################################################  
   # Use this template to call reusable workflows #
   # to deploy other parts of the app             #
   ################################################
-  #SomeOtherComponent-Call-somethingelse-deployment
-  #  uses: ./.github/workflows/component-deployment.yml
+  #APPX-call-prodev-solution-deployment
+  #  uses: ./.github/workflows/prodev-deployment.yml
+  #  needs: variablesetup
   #  with:
   #    environment: ${{ inputs.environment }}
   #    <other variables to pass>
   #  secrets: inherit
+  
+  #debugvariables:
+  #  runs-on: windows-latest
+  #  needs: variablesetup
+  #  steps:
+  #    - run: |
+  #        write-host environment ${{ needs.variablesetup.outputs.ENVIRONMENT }}
+  #        write-host almlab settings ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
+  #        write-host github settings ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
+  #      shell: pwsh
+
+
