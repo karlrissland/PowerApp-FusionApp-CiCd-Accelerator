@@ -75,6 +75,8 @@ jobs:
           write-host "TENANT_ID: ${{env.TENANT_ID}}"
           write-host "Environment: ${{ inputs.environment }}"
           write-host "Dispatch Event: ${{github.EVENT_NAME}}"
+          write-host "Settings_File_Contents: ${{inputs.settingsfilecontents}}"
+          write-host "env Settings_file_Contents: ${{ env.SETTINGS_FILE_CONTENTS }}"
         shell: pwsh    
     
       - uses: actions/checkout@v3
