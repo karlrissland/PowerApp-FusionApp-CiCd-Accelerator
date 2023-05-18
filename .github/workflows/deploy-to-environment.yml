@@ -35,13 +35,12 @@ jobs:
     
     steps:
       - name: setvariables
-        id: setvariables
         run: |
           write-host environment ${{ github.event.inputs.environment }}
         shell: pwsh
     outputs:
       ENVIRONMENT: ${{ github.event.inputs.environment}}
-      ALMLAB_SETTINGS_FILE: ${{vars.ALMLAB_SETTINGSFILE}}
+      ALMLAB_SETTINGS_FILE: "Hard Coded"
       GITHUB_SETTINGS_FILE: ${{vars.XGITHUB_SETTINGSFILE}}
 
   ALMLAB-call-powerapp-solution-deployment:
@@ -58,9 +57,9 @@ jobs:
 
     steps:
       - run: |
-          write-host environment ${{ needs.setvariables.outputs.ENVIRONMENT }}
-          write-host almlab settings ${{ needs.setvariables.outputs.ALMLAB_SETTINGS_FILE }}
-          write-host github settings ${{ needs.setvariables.outputs.GITHUB_SETTINGS_FILE }}
+          write-host environment ${{ needs.variablesetup.outputs.ENVIRONMENT }}
+          write-host almlab settings ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
+          write-host github settings ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
         shell: pwsh
 
   #GITHUB-call-powerapp-solution-deployment: 
