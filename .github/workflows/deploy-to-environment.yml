@@ -32,7 +32,7 @@ jobs:
     uses: ./.github/workflows/deploy-powerapp-solution.yml
     with:
       environment: ${{ inputs.environment }}
-      settingsfile: ${{vars.ALMLAB_SETTINGSFILE}}
+      settingsfilecontents: ${{vars.ALMLAB_SETTINGSFILE}}
       solutionName: "ALMLab"
     secrets: inherit
     
@@ -40,7 +40,7 @@ jobs:
   #  uses: ./.github/workflows/deploy-powerapp-solution.yml
   #  with:
   #    environment: ${{ inputs.environment }}
-  #    settingsfile: ${{vars.XGITHUB_SETTINGSFILE}}
+  #    settingsfilecontents: ${{vars.XGITHUB_SETTINGSFILE}}
   #    solutionName: "GITHUB"
   #  secrets: inherit
     
