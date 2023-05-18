@@ -82,7 +82,7 @@ jobs:
         uses: marcdomain/set-variables@v1
         with:
           variables: |
-            SOLUTION_NAME: "${{env.DEPLOY_MANAGED}}" == "true" ? "${{ env.SOLUTION_NAME }}_managed.zip" : "${{ env.SOLUTION_NAME }}.zip"
+            SOLUTION_FILE_NAME: "${{env.DEPLOY_MANAGED}}" == "true" ? "${{ env.SOLUTION_NAME }}_managed.zip" : "${{ env.SOLUTION_NAME }}.zip"
       
       - name: check packed solution
         if: ${{env.CHECK_CONSISTENCY}}
@@ -92,7 +92,7 @@ jobs:
           app-id: ${{env.CLIENT_ID}}
           client-secret: ${{ env.POWERPLATFORMSPN }}
           tenant-id: ${{env.TENANT_ID}}
-          path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
+          path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_FILE_NAME }}
       
       - name: update settings file
         run: |
@@ -116,7 +116,7 @@ jobs:
           app-id: ${{env.CLIENT_ID}}
           client-secret: ${{ env.POWERPLATFORMSPN }}
           tenant-id: ${{env.TENANT_ID}}
-          solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
+          solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_FILE_NAME }}
           force-overwrite: true
           publish-changes: true
           deployment-settings-file: .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json
