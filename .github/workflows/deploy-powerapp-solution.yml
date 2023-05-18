@@ -43,8 +43,8 @@ env:
   
 jobs:
   deploy:
-    environment: ${{ github.event.inputs.environment }}
-    if: ${{ github.event.inputs.environment != 'Dev'}}  #### Don't want to inadvertantly deploy back to dev as it is our starting point ###
+    environment: ${{ inputs.environment }}
+    if: ${{ inputs.environment != 'Dev'}}  #### Don't want to inadvertantly deploy back to dev as it is our starting point ###
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
