@@ -15,9 +15,19 @@ jobs:
     uses: ./.github/workflows/deploy-to-environment.yml
     with:
       environment: ${{ matrix.environment }}
-    
+    secrets: inherit
+ 
+ ############################################
+ # You may like how this works/looks better #
+ ############################################
  # release-to-test:
  #   uses: ./.github/workflows/deploy-to-environment.yml
  #   with:
  #     environment: "Test"
+ #   secrets: inherit
+ #
+ # release-to-prod:
+ #   uses: ./.github/workflows/deploy-to-environment.yml
+ #   with:
+ #     environment: "Prod"
  #   secrets: inherit
