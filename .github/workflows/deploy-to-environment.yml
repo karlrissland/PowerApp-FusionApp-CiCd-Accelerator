@@ -27,14 +27,21 @@ permissions:
 # pass in the settings for each solution.  Have not found a way to    #
 # programatically select a variable for use.                           #
 #######################################################################
+
 jobs:
-  ALMLab-call-powerapp-solution-deployment: 
-    uses: ./.github/workflows/deploy-powerapp-solution.yml
-    with:
-      environment: ${{ inputs.environment }}
-      settingsfilecontents: ${{vars.ALMLAB_SETTINGSFILE}}
-      solutionName: "ALMLab"
-    secrets: inherit
+  deploy:
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: windows-latest
+      
+    steps:
+      - name: Deploy ALMLab Solution
+        uses: ./.github/workflows/deploy-powerapp-solution.yml
+        with:
+          environment: ${{ inputs.environment }}
+          settingsfilecontents: ${{vars.ALMLAB_SETTINGSFILE}}
+          solutionName: "ALMLab"
+    
+
     
   #GITHUB-call-powerapp-solution-deployment: 
   #  uses: ./.github/workflows/deploy-powerapp-solution.yml
