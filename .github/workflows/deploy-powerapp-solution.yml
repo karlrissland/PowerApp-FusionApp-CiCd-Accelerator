@@ -42,7 +42,7 @@ env:
   SOLUTION_SHIPPING_FOLDER: out/ship
   
 jobs:
-  deploy:
+  deploy-powerapp-solution:
     environment: ${{ inputs.environment }}
     if: ${{ inputs.environment != 'Dev'}}  #### Don't want to inadvertantly deploy back to dev as it is our starting point ###
     runs-on: windows-latest
