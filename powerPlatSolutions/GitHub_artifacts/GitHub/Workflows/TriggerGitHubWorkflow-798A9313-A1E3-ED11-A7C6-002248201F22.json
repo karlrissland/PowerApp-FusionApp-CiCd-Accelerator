@@ -1,0 +1,208 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "crd59_sharedcommondataserviceforapps_dacd1"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_github": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "crd59_sharedgithub_a596f"
+        },
+        "api": {
+          "name": "shared_github"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added:_modified_or_deleted:_and_the_version_number_changed": {
+          "metadata": {
+            "operationMetadataId": "09e1ec8e-5251-47e0-bd30-9ae28c983eec"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "solution",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "version"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "List_rows:_matching_solution_name": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "77aa78bd-b22b-4f83-ad55-36ef21be3b3a"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "crd59_powerapptogithubmappings",
+              "$filter": "almlab_solution_name eq '@{triggerOutputs()?['body/uniquename']}'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each:_Row_Returned": {
+          "foreach": "@outputs('List_rows:_matching_solution_name')?['body/value']",
+          "actions": {
+            "Set_variable:_for_json_payload": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "fe3fbda5-2981-4d36-a84d-833dbfe6a652"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "jsonObj",
+                "value": "@json(items('Apply_to_each:_Row_Returned')?['crd59_dispatch_event_payload'])"
+              }
+            },
+            "Condition:_is_it_enabled": {
+              "actions": {
+                "Create_a_repository_dispatch_event": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "634f81e0-2086-4265-9059-80f49b5c8e03"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_github",
+                      "operationId": "CreateRepositoryDispatchEvent",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_github"
+                    },
+                    "parameters": {
+                      "repositoryOwner": "@items('Apply_to_each:_Row_Returned')?['crd59_repository_owner']",
+                      "repositoryName": "@items('Apply_to_each:_Row_Returned')?['crd59_repository_name']",
+                      "body/event_type": "ALMLab_Extract",
+                      "body/client_payload": "@variables('jsonObj')"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_variable:_for_json_payload": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@items('Apply_to_each:_Row_Returned')?['crd59_enabled']",
+                  true
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "91b63fad-ef7b-44c1-bd73-f0cee0e659c5"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable:_for_json_payload": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9e5f2eb5-16c7-4bf9-9a2c-3d56b0d4ff5e"
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable:_for_json_payload": {
+          "runAfter": {
+            "list_rows_body": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ae691f89-4d1d-4f03-9014-762103bde5c0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "jsonObj",
+                "type": "object"
+              }
+            ]
+          }
+        },
+        "list_rows_body": {
+          "runAfter": {
+            "trigger_body": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "92010a86-06be-48b6-96fd-f82c06645dcf"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "body of list",
+                "type": "string",
+                "value": "@{body('List_rows:_matching_solution_name')}"
+              }
+            ]
+          }
+        },
+        "trigger_body": {
+          "runAfter": {
+            "List_rows:_matching_solution_name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e1cbf943-79c2-4ff9-8ab1-419a3dfd0493"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "solution info body",
+                "type": "string",
+                "value": "@{triggerOutputs()?['body']}"
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

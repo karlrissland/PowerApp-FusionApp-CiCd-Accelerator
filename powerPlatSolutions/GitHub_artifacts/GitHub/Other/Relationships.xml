@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_crd59_powerapptogithubmapping" />
+  <EntityRelationship Name="lk_crd59_powerapptogithubmapping_createdby" />
+  <EntityRelationship Name="lk_crd59_powerapptogithubmapping_modifiedby" />
+  <EntityRelationship Name="owner_crd59_powerapptogithubmapping" />
+  <EntityRelationship Name="team_crd59_powerapptogithubmapping" />
+  <EntityRelationship Name="user_crd59_powerapptogithubmapping" />
+</EntityRelationships>
