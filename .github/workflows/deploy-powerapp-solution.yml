@@ -59,19 +59,19 @@ jobs:
       
     steps:
       - run: |
-          write-host SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}
-          write-host SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}
-          write-host SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}
-          write-host SOLUTION_SHIPPING_FOLDER: ${{env.SOLUTION_SHIPPING_FOLDER}}
-          write-host CHECK_CONSISTENCY: ${{env.CHECK_CONSISTENCY}}
-          write-host CLIENT_ID: ${{env.CLIENT_ID}}
-          write-host DEPLOY_MANGED: ${{env.DEPLOY_MANAGED}}
-          write-host ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}
-          write-host SOLUTION_NAME: ${{env.SOLUTION_NAME}}
-          write-host TENANT_ID: ${{env.TENANT_ID}}
-          write-host Environment: ${{ github.event.inputs.environment }}
-          write-host Dispatch Event: ${{github.EVENT_NAME}}
-          #write-host Settings File Contents: ${{env.SETTINGS_FILE_CONTENTS}} #the json tends to mess up the output
+          write-host "SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}"
+          write-host "SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}"
+          write-host "SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}"
+          write-host "SOLUTION_SHIPPING_FOLDER: ${{env.SOLUTION_SHIPPING_FOLDER}}"
+          write-host "CHECK_CONSISTENCY: ${{env.CHECK_CONSISTENCY}}"
+          write-host "CLIENT_ID: ${{env.CLIENT_ID}}"
+          write-host "DEPLOY_MANGED: ${{env.DEPLOY_MANAGED}}"
+          write-host "ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}"
+          write-host "SOLUTION_NAME: ${{env.SOLUTION_NAME}}"
+          write-host "TENANT_ID: ${{env.TENANT_ID}}"
+          write-host "Environment: ${{ github.event.inputs.environment }}"
+          write-host "Dispatch Event: ${{github.EVENT_NAME}}"
+          # write-host "Settings File Contents: ${{env.SETTINGS_FILE_CONTENTS}}" #the json tends to mess up the output
         shell: pwsh    
     
       - uses: actions/checkout@v3
