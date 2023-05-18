@@ -22,36 +22,31 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  ALMLAB_SETTINGSFILE: ${{vars.ALMLAB_SETTINGSFILE}}
+  GITHUB_SETTINGSFILE:  ${{vars.XGITHUB_SETTINGSFILE}}
+  
 #######################################################################
 # Need to call deploy-powerapp-solution.yml for each solution so we   #
 # pass in the settings for each solution.  Have not found a way to    #
 # programatically select a variable for use.                           #
 #######################################################################
 
-jobs:
-  deploy:
-    environment: ${{ github.event.inputs.environment }}
-    runs-on: windows-latest
-      
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          lfs: true
-    
-      - name: Deploy ALMLab Solution
-        uses: ./.github/workflows/deploy-powerapp-solution.yml
-        with:
-          environment: ${{ inputs.environment }}
-          settingsfilecontents: ${{vars.ALMLAB_SETTINGSFILE}}
-          solutionName: "ALMLab"
+jobs:   
+  ALMLAB-call-powerapp-solution-deployment:
+     uses: ./.github/workflows/deploy-powerapp-solution.yml
+     with:
+       environment: ${{ inputs.environment }}
+       settingsfilecontents: ${{env.ALMLAB_SETTINGSFILE}}
+       solutionName: "GITHUB"
+     secrets: inherit
     
 
-    
   #GITHUB-call-powerapp-solution-deployment: 
   #  uses: ./.github/workflows/deploy-powerapp-solution.yml
   #  with:
   #    environment: ${{ inputs.environment }}
-  #    settingsfilecontents: ${{vars.XGITHUB_SETTINGSFILE}}
+  #    settingsfilecontents: ${{env.GITHUB_SETTINGSFILE}}
   #    solutionName: "GITHUB"
   #  secrets: inherit
     
