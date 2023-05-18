@@ -30,4 +30,6 @@ jobs:
           lfs: true
 
       - name: Run a one-line script
-        run: put your prodev build deploy steps here
+        run: |
+          write-host "put your prodev build deploy steps here"
+        shell: pwsh
