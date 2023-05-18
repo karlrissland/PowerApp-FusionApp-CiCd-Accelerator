@@ -11,7 +11,7 @@ on:
         description: 'the name of the PowerApp Solution'
         required: true
         type: string
-      settingsfile:
+      settingsfilecontents:
         description: 'the settingsfile json contents with updated values'
         required: true
         type: string
