@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 jobs:
-  build_deploy:
+  build_deploy-prodev-solution:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
 
