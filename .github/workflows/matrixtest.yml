@@ -48,19 +48,13 @@ jobs:
       #      ${{ matrix.value == 'ALMLAB'}} => ${{vars.ALMLAB_SETTINGSFILE}}
       #      ${{ matrix.value == 'GITHUB'}} => ${{vars.XGITHUB_SETTINGSFILE}}
       
-      - run: |
-          $a = "${{ matrix.value }}"
-          $s1 | ConvertTo-Json | ${{vars.ALMLAB_SETTINGSFILE}}
-          $s2 | ConvertTo-Json | ${{vars.XGITHUB_SETTINGSFILE}}
-          #switch($a){
-          #  "ALMLAB"{$s | ConvertTo-Json | ${{vars.ALMLAB_SETTINGSFILE}} }
-          #  "GITHUB"{$s | ConvertTo-Json | ${{vars.XGITHUB_SETTINGSFILE}} }
-          #}
-          #write-host $s
-        shell: pwsh
+      - uses: devops-actions/json-to-file@v1.0.0
+        with:
+          json: ${{vars.ALMLAB_SETTINGSFILE}}
+          filename: 'test.json'
     
     
       - run: |
-          write-host "hello... ${{ matrix.value }}"
-          write-host "SomeTestVariable - ${{env.SomeTestVariable}}"
+          dir
+          type test.json
         shell: pwsh
