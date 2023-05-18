@@ -11,7 +11,7 @@ jobs:
   deployment_matrix:
     strategy:
       matrix:
-         environment: ["Test","Prod"]
+         environment: [Test,Prod]
     uses: ./.github/workflows/deploy-to-environment.yml
     with:
       environment: ${{ matrix.environment }}
