@@ -21,10 +21,6 @@ on:
 permissions:
   id-token: write
   contents: read
-
-env:
-  ALMLAB_SETTINGSFILE: ${{vars.ALMLAB_SETTINGSFILE}}
-  GITHUB_SETTINGSFILE:  ${{vars.XGITHUB_SETTINGSFILE}}
   
 #######################################################################
 # Need to call deploy-powerapp-solution.yml for each solution so we   #
@@ -32,15 +28,39 @@ env:
 # programatically select a variable for use.                           #
 #######################################################################
 
-jobs:   
+jobs:
+  variablesetup:
+    environment: ${{ github.event.inputs.environment}}
+    runs-on: windows-latest
+    env:
+      ENVIRONMENT: ${{ github.event.inputs.environment}}
+      ALMLAB_SETTINGS_FILE: ${{vars.ALMLAB_SETTINGSFILE}}
+      GITHUB_SETTINGS_FILE: ${{vars.XGITHUB_SETTINGSFILE}}
+    
+    steps:
+      - run: |
+          write-host environment ${{ env.ENVIRONMENT }}
+          write-host almlab settings ${{ env.ALMLAB_SETTINGS_FILE }}
+          write-host github settings ${{ env.GITHUB_SETTINGS_FILE }}
+        shell: pwsh
+
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
      with:
        environment: ${{ inputs.environment }}
-       settingsfilecontents: ${{env.ALMLAB_SETTINGSFILE}}
+       settingsfilecontents: "HardCoded-fix!"
        solutionName: "GITHUB"
      secrets: inherit
-    
+  
+  variableread:
+    runs-on: windows-latest
+
+    steps:
+      - run: |
+          write-host environment ${{ env.ENVIRONMENT }}
+          write-host almlab settings ${{ env.ALMLAB_SETTINGS_FILE }}
+          write-host github settings ${{ env.GITHUB_SETTINGS_FILE }}
+        shell: pwsh
 
   #GITHUB-call-powerapp-solution-deployment: 
   #  uses: ./.github/workflows/deploy-powerapp-solution.yml
