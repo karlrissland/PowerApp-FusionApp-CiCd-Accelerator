@@ -1,4 +1,4 @@
-name: deploy powerapp solution
+name: Deploy Powerapp Solution
 
 on:
   workflow_call:
@@ -11,6 +11,10 @@ on:
         description: 'the name of the PowerApp Solution'
         required: true
         type: string
+      settingsfile:
+        description: 'the settingsfile json contents with updated values'
+        required: true
+        type: string
         
   workflow_dispatch:
     inputs:
@@ -20,6 +24,10 @@ on:
         type: environment
       solutionName:
         description: 'environment to deploy to'
+        required: true
+        type: string
+      settingsfilecontents:
+        description: 'the settingsfile json contents with updated values'
         required: true
         type: string
 
@@ -47,6 +55,7 @@ jobs:
       TENANT_ID: ${{vars.TENANT_ID}}
       CLIENT_ID: ${{vars.CLIENT_ID}}
       POWERPLATFORMSPN: ${{ secrets.PowerPlatformSPN }}
+      SETTINGS_FILE_CONTENTS: ${{inputs.settingsfilecontents}}
       
     steps:
       - run: |
@@ -62,6 +71,7 @@ jobs:
           write-host TENANT_ID: ${{env.TENANT_ID}}
           write-host Environment: ${{ github.event.inputs.environment }}
           write-host Dispatch Event: ${{github.EVENT_NAME}}
+          write-host Settings File Contents: ${{env.SETTINGS_FILE_CONTENTS}}
         shell: pwsh    
     
       - uses: actions/checkout@v3
