@@ -1,4 +1,4 @@
-name: PowerApp-Export-and-Branch-Solution
+name: Extract PowerApp Solution to Branch
 # Export solution from DEV environment
 #  unpack it and prepare, commit and push a git branch with the changes
 
