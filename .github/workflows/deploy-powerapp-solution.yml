@@ -46,6 +46,7 @@ jobs:
       SOLUTION_NAME: ${{vars.SOLUTION_NAME}}
       TENANT_ID: ${{vars.TENANT_ID}}
       CLIENT_ID: ${{vars.CLIENT_ID}}
+      POWERPLATFORMSPN: ${{ secrets.PowerPlatformSPN }}
       
     steps:
       - run: |
@@ -79,7 +80,7 @@ jobs:
         with:
           environment-url: ${{env.ENVIRONMENT_URL}}
           app-id: ${{env.CLIENT_ID}}
-          client-secret: ${{ secrets.PowerPlatformSPN }}
+          client-secret: ${{ env.POWERPLATFORMSPN }}
           tenant-id: ${{env.TENANT_ID}}
           path: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
       
@@ -103,7 +104,7 @@ jobs:
         with:
           environment-url: ${{env.ENVIRONMENT_URL}}
           app-id: ${{env.CLIENT_ID}}
-          client-secret: ${{ secrets.PowerPlatformSPN }}
+          client-secret: ${{ env.POWERPLATFORMSPN }}
           tenant-id: ${{env.TENANT_ID}}
           solution-file: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}
           force-overwrite: true
