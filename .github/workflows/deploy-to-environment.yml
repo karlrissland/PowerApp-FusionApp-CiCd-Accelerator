@@ -80,7 +80,7 @@ jobs:
   ################################################
   APPX-call-prodev-solution-deployment:
     uses: ./.github/workflows/deploy-prodev-solution.yml
-    needs: variablesetup
+   # needs: variablesetup
     with:
       environment: ${{ inputs.environment }}
       #othervariabletopass: ${{needs.variablesetup.outputs.othervariabletopass}}
