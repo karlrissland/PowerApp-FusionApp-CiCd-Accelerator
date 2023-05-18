@@ -36,8 +36,14 @@ jobs:
        solutionName: "ALMLAB"
      secrets: inherit
   
+  ##############################################
+  # NOTE: PowerPlat doesn't like importing two #
+  # solutions at the same time from the same   #
+  # account.  Added 'needs' statement          #
+  ##############################################
   GITHUB-call-powerapp-solution-deployment: 
     uses: ./.github/workflows/deploy-powerapp-solution.yml
+    needs: ALMLAB-call-powerapp-solution-deployment
     with:
       environment: ${{ inputs.environment }}
       settingsfilecontents: ${{ vars.XGITHUB_SETTINGS_FILE }}
