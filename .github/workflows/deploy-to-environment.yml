@@ -39,6 +39,7 @@ jobs:
      - name: getvariables
        run: |
           write-host "${{ inputs.environment }}"
+          write-host "${{ vars.ALMLab_SETTINGSFILE }}"
        shell: pwsh
     outputs:
       ALMLAB_SETTINGSFILE: ${{ vars.ALMLab_SETTINGSFILE }}
