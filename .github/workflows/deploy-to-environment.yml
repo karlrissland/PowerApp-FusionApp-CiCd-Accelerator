@@ -35,12 +35,12 @@ jobs:
   # workflow.                                                  #
   ##############################################################
   variablesetup:
-    environment: ${{ github.event.inputs.environment}}
+    environment: ${{ inputs.environment}}
     runs-on: windows-latest
     steps:
       - name: setvariables
         run: |
-          write-host "environment ${{ github.event.inputs.environment }}"
+          write-host "environment ${{ inputs.environment }}"
           write-host "event type ${{github.EVENT_NAME}}"
         shell: pwsh
     outputs:
