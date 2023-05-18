@@ -69,13 +69,13 @@ jobs:
   # Use this template to call reusable workflows #
   # to deploy other parts of the app             #
   ################################################
-  #APPX-call-prodev-solution-deployment
-  #  uses: ./.github/workflows/prodev-deployment.yml
-  #  needs: variablesetup
-  #  with:
-  #    environment: ${{ inputs.environment }}
-  #    <other variables to pass>
-  #  secrets: inherit
+  APPX-call-prodev-solution-deployment:
+    uses: ./.github/workflows/prodev-deployment.yml
+    needs: variablesetup
+    with:
+      environment: ${{ inputs.environment }}
+      #othervariabletopass: ${{needs.variablesetup.outputs.othervariabletopass}}
+    secrets: inherit
   
   #debugvariables:
   #  runs-on: windows-latest
