@@ -10,6 +10,7 @@ permissions:
 jobs:
   deployment_matrix:
     strategy:
+      max-parallel: 1
       matrix:
          environment: [Test,Prod]
     uses: ./.github/workflows/deploy-to-environment.yml
