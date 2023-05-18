@@ -4,7 +4,7 @@ name: Extract PowerApp Solution to Branch
 
 on:
   repository_dispatch:
-    types: [ALMLab_Extract]
+    types: [PowerApp_Solution_Extract]
 
   workflow_dispatch:
     inputs:
@@ -12,7 +12,7 @@ on:
       solution_name:
         description: 'name of the solution to worked on from Power Platform'
         required: true
-        default: ALMLab
+
 env:
 #edit your values here
   SOLUTION_EXPORTED_FOLDER: out/exported/
@@ -48,7 +48,7 @@ jobs:
           write-host ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}
           write-host SOLUTION_NAME: ${{env.SOLUTION_NAME}}
           write-host TENANT_ID: ${{vars.TENANT_ID}}
-          write-host Environment: ${{ github.event.inputs.environment }}
+          write-host Environment: ${{ inputs.environment }}
           write-host Dispatch Event: ${{github.EVENT_NAME}}
       shell: pwsh
 
