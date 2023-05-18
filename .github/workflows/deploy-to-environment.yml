@@ -40,7 +40,8 @@ jobs:
     steps:
       - name: setvariables
         run: |
-          write-host environment ${{ github.event.inputs.environment }}
+          write-host "environment ${{ github.event.inputs.environment }}"
+          write-host "event type ${{github.EVENT_NAME}}"
         shell: pwsh
     outputs:
       ENVIRONMENT: ${{ github.event.inputs.environment }}
