@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   build_deploy:
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
 
     steps:
