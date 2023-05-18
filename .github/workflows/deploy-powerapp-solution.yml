@@ -103,6 +103,10 @@ jobs:
           json: ${{env.SETTINGS_FILE_CONTENTS}}
           filename: .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json
       
+      - run: |
+          type .\${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/Updated_${{ env.SOLUTION_NAME }}_SettingsFile.json
+        shell: pwsh
+      
       ###########################################################################################################
       # NOTE: If the environment variable doesn't have a value and only a default value, there will be no change
       #       When you actually have a value for the environment variable, a new json file is created when the
