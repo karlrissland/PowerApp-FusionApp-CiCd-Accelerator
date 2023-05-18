@@ -25,14 +25,30 @@ permissions:
 #######################################################################
 # Need to call deploy-powerapp-solution.yml for each solution so we   #
 # pass in the settings for each solution.  Have not found a way to    #
-# programatically select a variable for use.                           #
+# programatically select a variable for use.                          #
+#                                                                     #
+# Cannot access environment variables when calling reusable workflow  #
+# so using a job to get them, and then setting the values as outputs  #
+# which can be picked up when calling the reusable workflows          #
 #######################################################################
 jobs:
+  getvariables:
+    environment: ${{ inputs.environment }}
+    runs-on: windows-latest
+    steps:
+     - name: getvariables
+       run: |
+          write-host "${{ inputs.environment }}"
+       shell: pwsh
+    outputs:
+      ALMLAB_SETTINGSFILE: ${{ vars.ALMLab_SETTINGSFILE }}
+      GITHUB_SETTINGS_FILE: ${{ vars.XGITHUB_SETTINGSFILE }}
+    
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
      with:
        environment: ${{ inputs.environment }}
-       settingsfilecontents: ${{ vars.ALMLab_SETTINGSFILE }}
+       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLab_SETTINGSFILE }}
        solutionName: "ALMLAB"
      secrets: inherit
   
@@ -43,10 +59,12 @@ jobs:
   ##############################################
   GITHUB-call-powerapp-solution-deployment: 
     uses: ./.github/workflows/deploy-powerapp-solution.yml
-    needs: ALMLAB-call-powerapp-solution-deployment
+    needs:
+      - getvariables
+      - ALMLAB-call-powerapp-solution-deployment
     with:
       environment: ${{ inputs.environment }}
-      settingsfilecontents: ${{ vars.XGITHUB_SETTINGS_FILE }}
+      settingsfilecontents: ${{ needs.getvariables.outputs.XGITHUB_SETTINGS_FILE }}
       solutionName: "GITHUB"
     secrets: inherit
   
