@@ -50,11 +50,13 @@ jobs:
       
       - run: |
           $a = "${{ matrix.value }}"
-          switch($a){
-            "ALMLAB"{$s | ConvertTo-Json | ${{vars.ALMLAB_SETTINGSFILE}} }
-            "GITHUB"{$s | ConvertTo-Json | ${{vars.XGITHUB_SETTINGSFILE}} }
-          }
-          write-host $s
+          $s1 | ConvertTo-Json | ${{vars.ALMLAB_SETTINGSFILE}}
+          $s2 | ConvertTo-Json | ${{vars.XGITHUB_SETTINGSFILE}}
+          #switch($a){
+          #  "ALMLAB"{$s | ConvertTo-Json | ${{vars.ALMLAB_SETTINGSFILE}} }
+          #  "GITHUB"{$s | ConvertTo-Json | ${{vars.XGITHUB_SETTINGSFILE}} }
+          #}
+          #write-host $s
         shell: pwsh
     
     
