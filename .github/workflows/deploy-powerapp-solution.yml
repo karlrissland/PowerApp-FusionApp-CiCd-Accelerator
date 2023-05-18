@@ -51,7 +51,7 @@ jobs:
       CHECK_CONSISTENCY: ${{vars.CHECK_CONSISTENCY}}
       DEPLOY_MANAGED: ${{vars.DEPLOY_MANAGED}}
       ENVIRONMENT_URL: ${{vars.ENVIRONMENT_URL}}
-      SOLUTION_NAME: ${{inputs.SOLUTION_NAME}}
+      SOLUTION_NAME: ${{inputs.solutionName}}
       TENANT_ID: ${{vars.TENANT_ID}}
       CLIENT_ID: ${{vars.CLIENT_ID}}
       SETTINGS_FILE_CONTENTS: ${{inputs.settingsfilecontents}}
