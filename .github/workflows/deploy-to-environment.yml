@@ -36,14 +36,13 @@ jobs:
        solutionName: "ALMLAB"
      secrets: inherit
   
-  #GITHUB-call-powerapp-solution-deployment: 
-  #  uses: ./.github/workflows/deploy-powerapp-solution.yml
-  #  needs: variablesetup
-  #  with:
-  #    environment: ${{ inputs.environment }}
-  #    settingsfilecontents: ${{ vars.XGITHUB_SETTINGS_FILE }}
-  #    solutionName: "GITHUB"
-  #  secrets: inherit
+  GITHUB-call-powerapp-solution-deployment: 
+    uses: ./.github/workflows/deploy-powerapp-solution.yml
+    with:
+      environment: ${{ inputs.environment }}
+      settingsfilecontents: ${{ vars.XGITHUB_SETTINGS_FILE }}
+      solutionName: "GITHUB"
+    secrets: inherit
   
   ################################################  
   # Use this template to call reusable workflows #
