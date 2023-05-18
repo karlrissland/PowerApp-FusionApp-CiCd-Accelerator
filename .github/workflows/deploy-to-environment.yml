@@ -40,8 +40,6 @@ jobs:
     steps:
       - run: |
           write-host environment ${{ env.ENVIRONMENT }}
-          write-host almlab settings ${{ env.ALMLAB_SETTINGS_FILE }}
-          write-host github settings ${{ env.GITHUB_SETTINGS_FILE }}
         shell: pwsh
 
   ALMLAB-call-powerapp-solution-deployment:
@@ -54,6 +52,7 @@ jobs:
   
   variableread:
     runs-on: windows-latest
+    needs: variablesetup
 
     steps:
       - run: |
