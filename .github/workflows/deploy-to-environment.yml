@@ -49,10 +49,11 @@ jobs:
     
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
+     needs:
+       - getvariables
      with:
        environment: ${{ inputs.environment }}
-       #settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
-       settingsfilecontents: "{}"
+       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
        solutionName: "ALMLAB"
      secrets: inherit
   
@@ -78,6 +79,8 @@ jobs:
   ################################################
   APPX-call-prodev-solution-deployment:
     uses: ./.github/workflows/deploy-prodev-solution.yml
+    needs: 
+      - getvariables
     with:
       environment: ${{ inputs.environment }}
       #<othervariabletopass>: ${{needs.getvariables.outputs.<othervariabletopass>}}
