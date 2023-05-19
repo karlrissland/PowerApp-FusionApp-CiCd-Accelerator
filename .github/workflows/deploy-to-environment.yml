@@ -51,7 +51,8 @@ jobs:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
      with:
        environment: ${{ inputs.environment }}
-       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
+       #settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
+       settingsfilecontents: "{}"
        solutionName: "ALMLAB"
      secrets: inherit
   
