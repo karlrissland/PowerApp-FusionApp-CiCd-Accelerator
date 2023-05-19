@@ -39,11 +39,11 @@ jobs:
      - name: getvariables
        run: |
           write-host "Environment: ${{ inputs.environment }}"
-          write-host "ALMLab Settings: ${{ vars.ALMLab_SETTINGSFILE }}"
+          write-host "ALMLab Settings: ${{ vars.ALMLAB_SETTINGSFILE }}"
           write-host "GitHub Settings: ${{ vars.XGITHUB_SETTINGSFILE }}"
        shell: pwsh
     outputs:
-      ALMLAB_SETTINGSFILE: ${{ vars.ALMLab_SETTINGSFILE }}
+      ALMLAB_SETTINGSFILE: ${{ vars.ALMLAB_SETTINGSFILE }}
       GITHUB_SETTINGSFILE: ${{ vars.XGITHUB_SETTINGSFILE }}
       ENVIRONMENT: ${{ inputs.environment }}
     
