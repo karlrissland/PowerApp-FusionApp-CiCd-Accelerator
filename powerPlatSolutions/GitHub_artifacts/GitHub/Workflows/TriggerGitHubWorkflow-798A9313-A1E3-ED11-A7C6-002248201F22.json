@@ -106,7 +106,7 @@
                     "parameters": {
                       "repositoryOwner": "@items('Apply_to_each:_Row_Returned')?['crd59_repository_owner']",
                       "repositoryName": "@items('Apply_to_each:_Row_Returned')?['crd59_repository_name']",
-                      "body/event_type": "ALMLab_Extract",
+                      "body/event_type": "@items('Apply_to_each:_Row_Returned')?['crd59_repository_dispatch_type']",
                       "body/client_payload": "@variables('jsonObj')"
                     },
                     "authentication": "@parameters('$authentication')"
