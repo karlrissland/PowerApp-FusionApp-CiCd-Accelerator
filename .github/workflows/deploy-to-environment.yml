@@ -1,0 +1,98 @@
+########################################################################
+# This workflow will deploy all app components to a specific environment
+########################################################################
+name: Deploy To Environment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'environment to deploy solution to'
+        required: true
+        type: string
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'environment to deploy solution to'
+        required: true
+        type: environment
+        
+permissions:
+  id-token: write
+  contents: read
+  
+#######################################################################
+# Need to call deploy-powerapp-solution.yml for each solution so we   #
+# pass in the settings for each solution.  Have not found a way to    #
+# programatically select a variable for use.                          #
+#                                                                     #
+# Cannot access environment variables when calling reusable workflow  #
+# so using a job to get them, and then setting the values as outputs  #
+# which can be picked up when calling the reusable workflows          #
+#######################################################################
+jobs:
+  getvariables:
+    environment: ${{ inputs.environment }}
+    runs-on: windows-latest
+    steps:
+     - name: getvariables
+       run: |
+          write-host "Environment: ${{ inputs.environment }}"
+          write-host "ALMLab Settings: ${{ vars.ALMLAB_SETTINGSFILE }}"
+          write-host "GitHub Settings: ${{ vars.XGITHUB_SETTINGSFILE }}"
+       shell: pwsh
+    outputs:
+      ALMLAB_SETTINGSFILE: ${{ vars.ALMLAB_SETTINGSFILE }}
+      GITHUB_SETTINGSFILE: ${{ vars.XGITHUB_SETTINGSFILE }}
+      ENVIRONMENT: ${{ inputs.environment }}
+    
+  ALMLAB-call-powerapp-solution-deployment:
+     uses: ./.github/workflows/deploy-powerapp-solution.yml
+     needs:
+       - getvariables
+     with:
+       environment: ${{ inputs.environment }}
+       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
+       solutionName: "ALMLAB"
+     secrets: inherit
+  
+  ##############################################
+  # NOTE: PowerPlat doesn't like importing two #
+  # solutions at the same time from the same   #
+  # account.  Added 'needs' statement          #
+  ##############################################
+  GITHUB-call-powerapp-solution-deployment: 
+    uses: ./.github/workflows/deploy-powerapp-solution.yml
+    needs:
+      - getvariables
+      - ALMLAB-call-powerapp-solution-deployment
+    with:
+      environment: ${{ inputs.environment }}
+      settingsfilecontents: ${{ needs.getvariables.outputs.GITHUB_SETTINGSFILE }}
+      solutionName: "GITHUB"
+    secrets: inherit
+  
+  ################################################  
+  # Use this template to call reusable workflows #
+  # to deploy other parts of the app             #
+  ################################################
+  APPX-call-prodev-solution-deployment:
+    uses: ./.github/workflows/deploy-prodev-solution.yml
+    needs: 
+      - getvariables
+    with:
+      environment: ${{ inputs.environment }}
+      #<othervariabletopass>: ${{needs.getvariables.outputs.<othervariabletopass>}}
+    secrets: inherit
+  
+  debugvariables:
+    runs-on: windows-latest
+    needs: getvariables
+    steps:
+      - run: |
+          write-host "environment ${{ needs.getvariables.outputs.ENVIRONMENT }}"
+          write-host "almlab settings ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}"
+          write-host "github settings ${{ needs.getvariables.outputs.GITHUB_SETTINGSFILE }}"
+        shell: pwsh
+

@@ -1,0 +1,35 @@
+name: Deploy ProDev Solution
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'environment to deploy to'
+        required: true
+        type: string
+      
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'environment to deploy to'
+        required: true
+        type: string
+        
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build_deploy-prodev-solution:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Run a one-line script
+        run: |
+          write-host "put your prodev build deploy steps here"
+        shell: pwsh

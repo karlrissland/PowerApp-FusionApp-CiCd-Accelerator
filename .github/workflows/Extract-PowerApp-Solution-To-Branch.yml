@@ -1,0 +1,141 @@
+name: Extract PowerApp Solution to Branch
+# Export solution from DEV environment
+#  unpack it and prepare, commit and push a git branch with the changes
+
+on:
+  repository_dispatch:
+    types: [PowerApp_Solution_Extract]
+
+  workflow_dispatch:
+    inputs:
+      # Change this value
+      solution_name:
+        description: 'name of the solution to worked on from Power Platform'
+        required: true
+
+env:
+#edit your values here
+  SOLUTION_EXPORTED_FOLDER: out/exported/
+  SOLUTION_FOLDER: out/solutions/
+  SOLUTION_TARGET_FOLDER: powerPlatSolutions/
+permissions:
+  contents: write
+jobs:
+  export-from-dev:
+    environment: dev
+    runs-on: windows-latest
+    # or you can say runs-on: ubuntu-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+        
+    - name: set solution as managed or unmanaged conditionally
+      uses: marcdomain/set-variables@v1
+      with:
+        variables: |
+            SOLUTION_NAME: "${{github.EVENT_NAME}}" == "workflow_dispatch" ? "${{ github.event.inputs.solution_name }}" : "${{ github.event.client_payload.solution_name }}"
+            ENVIRONMENT_URL: "${{github.EVENT_NAME}}" == "workflow_dispatch" ? "${{ vars.ENVIRONMENT_URL }}" : "${{ github.event.client_payload.EnvironmentUrl }}"
+
+    - run: |
+          write-host SOLUTION_EXPORTED_FOLDER: ${{env.SOLUTION_EXPORTED_FOLDER}}
+          write-host SOLUTION_FOLDER: ${{env.SOLUTION_FOLDER}}
+          write-host SOLUTION_TARGET_FOLDER: ${{env.SOLUTION_TARGET_FOLDER}}
+
+          write-host ENVIRONMENT_URL: ${{env.ENVIRONMENT_URL}}
+          write-host SOLUTION_NAME: ${{env.SOLUTION_NAME}}
+          write-host TENANT_ID: ${{vars.TENANT_ID}}
+          write-host Environment: ${{ inputs.environment }}
+          write-host Dispatch Event: ${{github.EVENT_NAME}}
+      shell: pwsh
+
+
+    - name: who-am-i action
+      uses: microsoft/powerplatform-actions/who-am-i@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{vars.TENANT_ID}}
+
+    - name: export unmanaged solution
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{vars.TENANT_ID}}
+        solution-name: ${{ env.SOLUTION_NAME }}
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+
+    - name: export managed solution
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{vars.TENANT_ID}}
+        solution-name: ${{ env.SOLUTION_NAME }}
+        managed: true
+        solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip
+
+
+    - name: Check unManaged Solution Consistency
+      uses: microsoft/powerplatform-actions/check-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{vars.TENANT_ID}}
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+
+    - name: Check Managed Solution Consistency
+      uses: microsoft/powerplatform-actions/check-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{vars.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{vars.TENANT_ID}}
+        path: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip
+
+    - name: install pac CLI, create settings file, stage artifacts
+      run: |
+        write-host "-----installing nuget package-----"
+        nuget install microsoft.powerapps.cli -version 1.22.2 -verbosity detailed
+        write-host "-----expanding nuget archive into .\pac-----"
+        Expand-Archive .\Microsoft.PowerApps.CLI.1.22.2\Microsoft.PowerApps.CLI.1.22.2.nupkg .\pac
+        write-host "-----creating settings file-----"
+        .\pac\tools\pac.exe solution create-settings --solution-zip ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip --settings-file ${{ env.SOLUTION_NAME}}_SettingsFile.json
+        write-host "-----copy settings file so included in branch-----"
+        dir
+        write-host "--------- making directory"
+        mkdir .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+        write-host "---------- made directory .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts"
+        write-host "---------- copying settings file to .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_SettingsFile.json"
+        copy .\${{env.SOLUTION_NAME }}_SettingsFile.json .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_SettingsFile.json
+        copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}.zip
+        copy .\${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}_managed.zip .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts/${{ env.SOLUTION_NAME }}_managed.zip
+      shell: pwsh
+        
+    - name: unpack-solution action
+      uses: microsoft/powerplatform-actions/unpack-solution@v0
+      with:
+        solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER}}/${{ env.SOLUTION_NAME }}.zip
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME}}_artifacts/${{ env.SOLUTION_NAME }}
+        solution-type: 'Unmanaged'
+        overwrite-files: true
+        
+    - name: Dir listing of staging folder
+      run: |
+        dir .\${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+
+    - name: branch-solution, prepare it for a PullRequest
+      uses: microsoft/powerplatform-actions/branch-solution@v0
+      with:
+        solution-folder: ${{ env.SOLUTION_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+        solution-target-folder: ${{ env.SOLUTION_TARGET_FOLDER}}/${{ env.SOLUTION_NAME }}_artifacts
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        allow-empty-commit: true
