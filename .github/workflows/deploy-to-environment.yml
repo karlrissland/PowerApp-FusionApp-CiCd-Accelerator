@@ -38,18 +38,20 @@ jobs:
     steps:
      - name: getvariables
        run: |
-          write-host "${{ inputs.environment }}"
-          write-host "${{ vars.ALMLab_SETTINGSFILE }}"
+          write-host "Environment: ${{ inputs.environment }}"
+          write-host "ALMLab Settings: ${{ vars.ALMLab_SETTINGSFILE }}"
+          write-host "GitHub Settings: ${{ vars.XGITHUB_SETTINGSFILE }}"
        shell: pwsh
     outputs:
       ALMLAB_SETTINGSFILE: ${{ vars.ALMLab_SETTINGSFILE }}
       GITHUB_SETTINGSFILE: ${{ vars.XGITHUB_SETTINGSFILE }}
+      ENVIRONMENT: ${{ inputs.environment }}
     
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
      with:
        environment: ${{ inputs.environment }}
-       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLab_SETTINGSFILE }}
+       settingsfilecontents: ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}
        solutionName: "ALMLAB"
      secrets: inherit
   
@@ -65,7 +67,7 @@ jobs:
       - ALMLAB-call-powerapp-solution-deployment
     with:
       environment: ${{ inputs.environment }}
-      settingsfilecontents: ${{ needs.getvariables.outputs.XGITHUB_SETTINGSFILE }}
+      settingsfilecontents: ${{ needs.getvariables.outputs.GITHUB_SETTINGSFILE }}
       solutionName: "GITHUB"
     secrets: inherit
   
@@ -77,7 +79,7 @@ jobs:
     uses: ./.github/workflows/deploy-prodev-solution.yml
     with:
       environment: ${{ inputs.environment }}
-      #othervariabletopass: ${{needs.variablesetup.outputs.othervariabletopass}}
+      #<othervariabletopass>: ${{needs.getvariables.outputs.<othervariabletopass>}}
     secrets: inherit
   
   debugvariables:
@@ -85,8 +87,8 @@ jobs:
     needs: getvariables
     steps:
       - run: |
-          write-host environment ${{ needs.variablesetup.outputs.ENVIRONMENT }}
-          write-host almlab settings ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
-          write-host github settings ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
+          write-host "environment ${{ needs.getvariables.outputs.ENVIRONMENT }}"
+          write-host "almlab settings ${{ needs.getvariables.outputs.ALMLAB_SETTINGSFILE }}"
+          write-host "github settings ${{ needs.getvariables.outputs.GITHUB_SETTINGSFILE }}"
         shell: pwsh
 
