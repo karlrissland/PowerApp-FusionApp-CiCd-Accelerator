@@ -43,7 +43,7 @@ jobs:
        shell: pwsh
     outputs:
       ALMLAB_SETTINGSFILE: ${{ vars.ALMLab_SETTINGSFILE }}
-      GITHUB_SETTINGS_FILE: ${{ vars.XGITHUB_SETTINGSFILE }}
+      GITHUB_SETTINGSFILE: ${{ vars.XGITHUB_SETTINGSFILE }}
     
   ALMLAB-call-powerapp-solution-deployment:
      uses: ./.github/workflows/deploy-powerapp-solution.yml
@@ -65,7 +65,7 @@ jobs:
       - ALMLAB-call-powerapp-solution-deployment
     with:
       environment: ${{ inputs.environment }}
-      settingsfilecontents: ${{ needs.getvariables.outputs.XGITHUB_SETTINGS_FILE }}
+      settingsfilecontents: ${{ needs.getvariables.outputs.XGITHUB_SETTINGSFILE }}
       solutionName: "GITHUB"
     secrets: inherit
   
@@ -80,5 +80,13 @@ jobs:
       #othervariabletopass: ${{needs.variablesetup.outputs.othervariabletopass}}
     secrets: inherit
   
-
+  debugvariables:
+    runs-on: windows-latest
+    needs: getvariables
+    steps:
+      - run: |
+          write-host environment ${{ needs.variablesetup.outputs.ENVIRONMENT }}
+          write-host almlab settings ${{ needs.variablesetup.outputs.ALMLAB_SETTINGS_FILE }}
+          write-host github settings ${{ needs.variablesetup.outputs.GITHUB_SETTINGS_FILE }}
+        shell: pwsh
 
